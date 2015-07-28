@@ -47,3 +47,4 @@ Parent plugin - you must activate it to usage ACF Frontend form.
 * Website : http://advancedcustomfields.com/
 * Documentation: http://www.advancedcustomfields.com/resources/
 * Support: http://support.advancedcustomfields.com/
+# alpacajs-ux-form-editor
