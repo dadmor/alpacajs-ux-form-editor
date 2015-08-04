@@ -6,31 +6,36 @@
 <link type="text/css" href="js/alpaca-min.css" rel="stylesheet"/>
 
 <body>
+	<h1>Form creator</h1>
+	<div id="main_container" style="float:left; width:70%">
+	</div>
+	<div id="forms-elements" style="float:right: width:25%; text-align:center">
+		<a id="add_input" href="#" class="button action" style="width:200px; margin-bottom:2px">input text</a><Br/>
+		<a id="add_select" href="#" class="button action" style="width:200px; margin-bottom:2px">multi choice</a><Br/>
+		<a id="add_checkbox" href="#" class="button action" style="width:200px; margin-bottom:2px">single checkbox</a><Br/>
+		<a id="add_object" href="#" class="button action" style="width:200px; margin-bottom:2px">container ( fieldset )</a><Br/>
+	</div>
 
-<h1>Form creator</h1>
+	<br style="clear:both"/>
 
-
-<div id="main_container" style="float:left; width:70%">
-	
-
-</div>
-
-<div id="forms-elements" style="float:right: width:25%; text-align:center">
-	<a id="add_input" href="#" class="button action" style="width:200px; margin-bottom:2px">input text</a><Br/>
-	<a id="add_select" href="#" class="button action" style="width:200px; margin-bottom:2px">multi choice</a><Br/>
-	<a id="add_checkbox" href="#" class="button action" style="width:200px; margin-bottom:2px">single checkbox</a><Br/>
-	<a id="add_object" href="#" class="button action" style="width:200px; margin-bottom:2px">container ( fieldset )</a><Br/>
-</div>
-<br style="clear:both"/>
-<h2>Form schema and options output</h2>
-<table style="width:100%">
-	<tr>
-		<td>Schema<textarea id="schema_output"></textarea></td>
-		<td>Options<textarea id="options_output"></textarea></td>
-	</tr>
-</table>	
-
+	<h2>Form schema and options output</h2>
+	<form method="post" action="test/index.php">
+		<table style="width:100%">
+			<tr>
+				<td>Schema<textarea id="schema_output" name="schema_output"></textarea></td>
+				<td>Options<textarea id="options_output" name="options_output"></textarea></td>
+			</tr>
+		</table>	
+		<table style="width:100%">
+			<tr>
+				<td>
+					<input type="submit" id="renderForm" href="#" class="buttondown" value="Show created form">
+				</td>
+			</tr>
+		</table>	
+	</form>
 </body>
+
 
 <style>
 /* normalize - delete this section if you wand add editor into WordPress plugins*/
@@ -63,12 +68,10 @@ input[type="text"]:focus {
 }
 
 #schema_output, #options_output{
-	
 	width:100%;
 	height:300px;
 	border:1px solid #ccc;
-	font-size:11px;
-
+	font-size:10px;
 }
 /* ------------------------------------------------------------ */
 /* extra standalone */
@@ -78,6 +81,43 @@ input[type="text"]:focus {
 	padding: 3px 1px;
 	font-size: 14px;
 	width: 100%;
+}
+.button{
+	padding:2px;
+	width:120px;
+	border:1px solid #c2c2c2;
+	border-radius: 2px;
+	margin:2px;
+	line-height:24px;
+	display:block;
+	float:right;
+	background-color:#D8E1E1;
+	box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 1);
+	color:#444;
+	text-decoration:none; 
+	font-size:14px;
+}
+.button:hover{
+	background-color: #AEB9B9;
+	box-shadow: none;	
+	color:#fff;
+	border:1px solid #999;
+}
+.buttondown{
+
+	padding:15px;
+	border:1px solid #c2c2c2;
+	border-radius: 2px;
+	margin:2px;
+	line-height:24px;
+	display:block;
+	background-color:#D8E1E1;
+	box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 1);
+	color:#444;
+	text-decoration:none; 
+	font-size:18px;
+	text-align: center;
+	width:100%;
 }
 body{font-family:arial;}
 
@@ -354,8 +394,19 @@ fieldset{
 				
 				},
 
-				add_option : function(){
-					alert(window.targetPath)
+				add_option_value : function(_this){
+					
+					var key = _this.closest('.alpaca-fieldset-item-container').attr('data-alpaca-item-container-item-key');
+					//console.log(data);
+					//console.log(window.targetPath);
+					//console.log($(this).val());
+					//console.log($(this).attr('name'));
+					alert(window.targetPath);
+
+					/* build options path */
+					/* schema.properties.element_0.properties */
+					var optionsPath = window.targetPath;
+					
 				}
 
 			};
@@ -388,25 +439,21 @@ fieldset{
 			});
 
 			$('#add_checkbox').click(function(){
-				_UXFORM.add_new_element('boolean','');
+				_UXFORM.add_new_element( 'boolean' , '' );
 			});
 
 			$('#add_object').click(function(){
-				_UXFORM.add_new_element('object','');
+				_UXFORM.add_new_element( 'object' , '' );
 			});
 
 			$(document).on("click", "div.helper-fieldset-tab", function(e) { 
 			//$('fieldset').live('click', function(e) {
-				_UXFORM.change_path_deep($(this));
+				_UXFORM.change_path_deep( $(this) );
 				e.stopPropagation();
 			});
 
 			$(document).on("change", "input.input-helper", function(e) { 
-				console.log(data);
-				console.log(window.targetPath);
-				console.log($(this).val());
-				console.log($(this).attr('name'));
-				_UXFORM.add_option();
+				_UXFORM.add_option_value($(this));
 			});
 
 			/* INIT  */
@@ -415,8 +462,8 @@ fieldset{
 				data["postRender"] = function(control){
 					_UXFORM.swith_fields_to_min_mode(control);
 				}
-				$("#schema_output").text(JSON.stringify(data.schema));
-				$("#options_output").text(JSON.stringify(data.options));
+				$("#schema_output").text(JSON.stringify(data['schema']));
+				$("#options_output").text(JSON.stringify(data['options']));
 		    	
 		    	$("#main_container").alpaca(data);
 	        }
