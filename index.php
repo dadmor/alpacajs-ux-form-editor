@@ -69,7 +69,7 @@ input[type="text"]:focus {
 
 #schema_output, #options_output{
 	width:100%;
-	height:300px;
+	height:250px;
 	border:1px solid #ccc;
 	font-size:10px;
 }
@@ -91,33 +91,34 @@ input[type="text"]:focus {
 	line-height:24px;
 	display:block;
 	float:right;
-	background-color:#D8E1E1;
+	background-color:#ddecef;
 	box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 1);
 	color:#444;
 	text-decoration:none; 
 	font-size:14px;
 }
-.button:hover{
-	background-color: #AEB9B9;
-	box-shadow: none;	
+.button:hover, .buttondown:hover{
+	background-color: #bcdbe0;
+	box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.5);
 	color:#fff;
-	border:1px solid #999;
+	border:1px solid #ccc;
+	cursor:pointer;
 }
 .buttondown{
-
 	padding:15px;
 	border:1px solid #c2c2c2;
 	border-radius: 2px;
 	margin:2px;
 	line-height:24px;
 	display:block;
-	background-color:#D8E1E1;
+	background-color:#ddecef;
 	box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 1);
 	color:#444;
 	text-decoration:none; 
 	font-size:18px;
 	text-align: center;
 	width:100%;
+	margin-bottom:40px;
 }
 body{font-family:arial;}
 
@@ -203,11 +204,15 @@ fieldset{
 			jQuery(document).ready(function($) {
 				
 				window.fieldsCounter = 0;
-				window.targetPath = ['schema.properties'];
+				window.targetPath = 'schema.properties';
+					
 				var data = {
 			    /* ----------------------------------------------------------------------- */
 			    	"options": {
-						"fields": {}
+						"fields": {
+							"ajax_callback": {},
+							"ajax_callback1": {}
+						}
 			    	},
 			    	"schema": {
 				      //"title": "Form extended options",
@@ -229,14 +234,14 @@ fieldset{
 				        
 				      }
 				    }
-				}
+				};
 
+			
 				
 	            /* ----------------------------------------------------------------------- */
 
-	           
-
-			window._parent;				
+			window._parent;	
+			
 			var _UXFORM = {
 			    open_field_options : function(_this){
 			    	//console.log('%c -- open_field_options ------', 'background: #222; color: #bada55');               
@@ -246,7 +251,7 @@ fieldset{
 				        	input += '<div class="context-mnu-item">Basic</div>';
 				        	input += '<div class="context-mnu-item">Advanced</div>';
 				        	input += '<div class="context-mnu-item">Dependency</div>';
-				        	input += '<div class="context-mnu-item">Specials</div>';
+				        	input += '<div class="context-mnu-item">WP Action</div>';
 				        input += '</div>';
 				        input += '<div style="width:80%; float:right">';
 				        	
@@ -379,7 +384,7 @@ fieldset{
 					$( ".alpaca-fieldset-item-container" ).each(function( index ) {
   						
   						$( this ).append('<div style="position:absolute; left:5px; top:5px" class="helper-object-name">' + $(this).attr('data-alpaca-item-container-item-key') + '</div>');
-  						$( this ).append('<div style="position:absolute; right:5px; top:5px" class="helper-object-remove">[remove]</div>');
+  						$( this ).append('<div style="position:absolute; right:5px; top:5px; text-decoration:underline; color:#687A7E" class="helper-object-remove">[remove]</div>');
 
 						if( $( this ).children().get(0).nodeName == 'FIELDSET'){
 							
@@ -395,18 +400,22 @@ fieldset{
 				},
 
 				add_option_value : function(_this){
-					
+					console.log(data);
 					var key = _this.closest('.alpaca-fieldset-item-container').attr('data-alpaca-item-container-item-key');
-					//console.log(data);
-					//console.log(window.targetPath);
+					
 					//console.log($(this).val());
-					//console.log($(this).attr('name'));
-					alert(window.targetPath);
+					//console.log($(_this).attr('name'));
 
 					/* build options path */
-					/* schema.properties.element_0.properties */
 					var optionsPath = window.targetPath;
-					
+					optionsPath = optionsPath.substring(7);
+					optionsPath = optionsPath.replace(/properties/g, "fields");
+					console.log(optionsPath+'.'+key+'.'+$(_this).attr('name'));
+
+					_.deepSet(data, 'options.'+optionsPath+'.'+key+'.'+$(_this).attr('name'), $(_this).val());
+
+					console.log(data);
+
 				}
 
 			};
@@ -449,11 +458,16 @@ fieldset{
 			$(document).on("click", "div.helper-fieldset-tab", function(e) { 
 			//$('fieldset').live('click', function(e) {
 				_UXFORM.change_path_deep( $(this) );
+				$('.helper-fieldset-tab').removeClass('helper-selected');
+				$(this).addClass('helper-selected');
 				e.stopPropagation();
 			});
 
 			$(document).on("change", "input.input-helper", function(e) { 
-				_UXFORM.add_option_value($(this));
+				if($(this).attr('data-type') == 'option'){
+					_UXFORM.add_option_value($(this));
+				}
+				
 			});
 
 			/* INIT  */
