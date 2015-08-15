@@ -13,7 +13,8 @@
 		<a id="add_input" href="#" class="button action" style="width:200px; margin-bottom:2px">input text</a><Br/>
 		<a id="add_select" href="#" class="button action" style="width:200px; margin-bottom:2px">multi choice</a><Br/>
 		<a id="add_checkbox" href="#" class="button action" style="width:200px; margin-bottom:2px">single checkbox</a><Br/>
-		<a id="add_object" href="#" class="button action" style="width:200px; margin-bottom:2px">container ( fieldset )</a><Br/>
+		<a id="add_object" href="#" class="button action" style="width:200px; margin-bottom:2px">fieldset (container)</a><Br/>
+		<a id="add_array" href="#" class="button action" style="width:200px; margin-bottom:2px">array (repeater)</a><Br/>
 	</div>
 
 	<br style="clear:both"/>
@@ -197,8 +198,36 @@ fieldset{
 .helper-item-details .label{
 	width:120px; line-height:30px; float:left
 }
+.helper-item-details .label div{
+	font-size:12px;
+}
 
 </style>
+
+<script id="helper-container-tpl" type="text/x-jquery-tmpl">
+	<div class="helper-item-details">
+	<div class="context-mnu"> 
+		<div class="context-mnu-item">Basic</div>
+		<div class="context-mnu-item">Advanced</div>
+		<div class="context-mnu-item">Dependency</div>
+		<div class="context-mnu-item">WP Action</div>
+	</div>
+	<div class="helper-items-body" style="width:80%; float:right">
+		<label class="label">name</label>
+		<input class="input-helper" type="text" name="name" data-type="shema-key">
+	</div>
+	<br style="clear:both">
+	</div>
+</script>
+
+<script id="helper-input-tpl" type="text/x-jquery-tmpl">
+	<label class="label">${label}</label>
+	<input class="input-helper" type="text" name="${name}" data-type="${type}" value="${value}">
+</script>
+
+
+
+
 
 <script type="text/javascript">
 			jQuery(document).ready(function($) {
@@ -209,70 +238,68 @@ fieldset{
 				var data = {
 			    /* ----------------------------------------------------------------------- */
 			    	"options": {
-						"fields": {
-							"ajax_callback": {},
-							"ajax_callback1": {}
-						}
+						"fields": {}
 			    	},
 			    	"schema": {
-				      //"title": "Form extended options",
-				      //"description": "Define your special display properties",
-				      "type": "object",
-				      "properties": {	        
-				        "ajax_callback": {
-							"type": "string",
-							"title": "callback AJAX function name",
-							"description": "name of java script callback function. You couuld add any functions to your scripts like name=function(response);",
-							"default": "add_event_callback",
-				        },
-				        "ajax_callback1": {
-							"type": "string",
-							"title": "callback AJAX function name",
-							"description": "name of java script callback function. You couuld add any functions to your scripts like name=function(response);",
-							"default": "add_event_callback",
-				        },
-				        
-				      }
+						"type": "object",
+						"properties": {}
 				    }
-				};
-
-			
-				
+				};				
 	            /* ----------------------------------------------------------------------- */
 
 			window._parent;	
 			
 			var _UXFORM = {
-			    open_field_options : function(_this){
-			    	//console.log('%c -- open_field_options ------', 'background: #222; color: #bada55');               
+			    render_field_options : function(_this){
+			    	//console.log('%c -- render_field_options ------', 'background: #222; color: #bada55');               
 			        //tb_show('Field options','#TB_inline?height=360&width=300&inlineId=prev');
-			        var input ='<div class="helper-item-details">';
-				        input += '<div class="context-mnu"> ';
-				        	input += '<div class="context-mnu-item">Basic</div>';
-				        	input += '<div class="context-mnu-item">Advanced</div>';
-				        	input += '<div class="context-mnu-item">Dependency</div>';
-				        	input += '<div class="context-mnu-item">WP Action</div>';
-				        input += '</div>';
-				        input += '<div style="width:80%; float:right">';
-				        	
-				        	input += '<label class="label">type</label>';
-				        	input += '<select><option>Array</option><option>Checkbox</option><option>File</option><option>Hidden</option></select><br/>';
-				       	 	
-				       	 	input += '<label class="label">name</label>';
-				       	 	input += '<input class="input-helper" type="text" name="name" data-type="shema-key">';
-				        	
-				        	input += '<label class="label">label</label>';
-				        	input += '<input class="input-helper" type="text" name="label" data-type="option">';
-				        	
-				        	input += '<label class="label">placeholder</label>';
-				        	input += '<input class="input-helper" type="text" name="placeholder" data-type="option">';
-				        	
-				        	input += '<label class="label">default value</label><input type="text">';
-						input += '</div>';
-						input += '<br style="clear:both">';
-					input += '</div>';
+					var targetPath = this.get_options_target_path(_this);
+					var tease_array = [
+						{	
+							'label':'label',
+							'name':'label',
+							'type':'option',
+							'value':this.get_option_value(targetPath+'.label')
+						},{
+							'label':'placeholder',
+							'name':'placeholder',
+							'type':'option',
+							'value':this.get_option_value(targetPath+'.placeholder')
+						},{							
+							'label':'helper',
+							'name':'helper',
+							'type':'option',
+							'value':this.get_option_value(targetPath+'.helper')
+						},{							
+							'label':'inputType',
+							'name':'inputType',
+							'type':'option',
+							'value':this.get_option_value(targetPath+'.inputType')
+						},{							
+							'label':'maskString',
+							'name':'maskString',
+							'type':'option',
+							'value':this.get_option_value(targetPath+'.maskString')
+						},{							
+							'label':'size',
+							'name':'size',
+							'type':'option',
+							'value':this.get_option_value(targetPath+'.size')
+						},{							
+							'label':'type',
+							'name':'type',
+							'type':'option',
+							'value':this.get_option_value(targetPath+'.type')
+						},{							
+							'label':'fieldClass',
+							'name':'fieldClass',
+							'type':'option',
+							'value':this.get_option_value(targetPath+'.fieldClass')
+						}
+						];
 					$('.alpaca-fieldset-item-container .helper-item-details').remove();
-			        _this.append(input);
+					$('#helper-container-tpl').tmpl([{}]).appendTo(_this);
+			        $('#helper-input-tpl').tmpl(tease_array).appendTo(_this.find('.helper-items-body'));
 
 			    },
 
@@ -281,10 +308,9 @@ fieldset{
 					//path = window.targetPath + '.' + "new_" + type + "_" + window.fieldsCounter;
 					path = window.targetPath + '.' + "element_" + window.fieldsCounter;
 					//console.log('%c path:'+path, 'background: #ccc; color: blue');
-
 					_.deepSet(data, path+'.type', type);
-					_.deepSet(data, path+'.title', "New element");
-					_.deepSet(data, path+'.description', "example description");
+					//_.deepSet(data, path+'.title', "New element");
+					//_.deepSet(data, path+'.description', "example description");
 
 				    if(_enum != ''){
 				    	_.deepSet(data, path+'.enum', _enum);
@@ -295,6 +321,11 @@ fieldset{
 					 	_.deepSet(data, path+'.title', "Object title");
 					 	_.deepSet(data, path+'.properties', false);
 			    	}
+
+			    	if(type == 'array'){
+				    	_.deepSet(data, path+'.type', type);
+					 	_.deepSet(data, path+'.items', false);
+					}
 
 				    window.fieldsCounter ++;
 				    
@@ -365,7 +396,7 @@ fieldset{
 					/* build first fieldset */
 					$("#main_container").children('fieldset').attr('data-first-container','true');
 
-					/* Add fieldsef tab */
+					/* Add fieldset tab */
 					var input = '';
 					input +='<div class="helper-fieldset-tab" data-path="schema.properties">';
 					input +='<div class="helpar-fieldset-tab-title">Main container</div>';
@@ -400,22 +431,29 @@ fieldset{
 				},
 
 				add_option_value : function(_this){
-					console.log(data);
-					var key = _this.closest('.alpaca-fieldset-item-container').attr('data-alpaca-item-container-item-key');
 					
-					//console.log($(this).val());
-					//console.log($(_this).attr('name'));
+					var targetPath = this.get_options_target_path(_this)+'.'+$(_this).attr('name');
+					_.deepSet(data, targetPath, $(_this).val());
+					console.log(data);
 
-					/* build options path */
+				},
+				get_option_value : function(label){
+					var output = _.deepGet(data, label);
+					if(output != undefined){
+						return output;
+					}else{
+						return "";
+					}
+					
+				},
+				get_options_target_path : function(_this){
+					
+					var key = _this.closest('.alpaca-fieldset-item-container').attr('data-alpaca-item-container-item-key');
 					var optionsPath = window.targetPath;
 					optionsPath = optionsPath.substring(7);
 					optionsPath = optionsPath.replace(/properties/g, "fields");
-					console.log(optionsPath+'.'+key+'.'+$(_this).attr('name'));
-
-					_.deepSet(data, 'options.'+optionsPath+'.'+key+'.'+$(_this).attr('name'), $(_this).val());
-
-					console.log(data);
-
+					optionsPath = 'options.'+optionsPath+'.'+key;
+					return optionsPath;
 				}
 
 			};
@@ -431,7 +469,8 @@ fieldset{
 
 			$(document).on("click", "div.alpaca-fieldset-item-container", function(e) { 
 			//$(".alpaca-fieldset-item-container").live('click', function(e) {  
-				_UXFORM.open_field_options($(this));
+				_UXFORM.render_field_options($(this));
+				e.stopPropagation();
 		    });
 
 			$(document).on("click", "div.helper-item-details", function(e) { 
@@ -453,6 +492,10 @@ fieldset{
 
 			$('#add_object').click(function(){
 				_UXFORM.add_new_element( 'object' , '' );
+			});
+
+			$('#add_array').click(function(){
+				_UXFORM.add_new_element( 'array' , '' );
 			});
 
 			$(document).on("click", "div.helper-fieldset-tab", function(e) { 
