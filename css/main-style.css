@@ -83,10 +83,14 @@ input[type="text"]:focus {
 body{font-family:arial;}
 
 /* ------------------------------------------------------------ */
+ol{
+	margin:0px;
+	padding:0px;
+}
 .alpaca-fieldset-item-container{
 	position:relative;
 	border:1px solid #B3B3B3; 
-	padding: 5px 0px 5px 5px; 
+	padding: 5px; 
 	background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAMElEQVQIW2N89+7df0FBQYb3798zwADjfyBAFgBJMIJUwpUAGSBdKIIwY+CCyOYCAOqoHyYVqHz5AAAAAElFTkSuQmCC) repeat;
 	box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.8);
 
@@ -159,4 +163,7 @@ fieldset{
 }
 .helper-item-details .label div{
 	font-size:12px;
+}
+.helper-selected{
+	background: #DAD8B6 !important; 
 }

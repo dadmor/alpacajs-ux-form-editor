@@ -11,7 +11,7 @@
 
 <body>
 	<h1>Form creator</h1>
-	<div id="main_container" style="float:left; width:70%">
+	<div id="main_container" data-path="/" style="float:left; width:70%">
 	</div>
 	<div id="forms-elements" style="float:right: width:25%; text-align:center">
 		<a id="add_input" href="#" class="button action" style="width:200px; margin-bottom:2px">input text</a><Br/>
@@ -55,6 +55,7 @@
 	</div>
 	<br style="clear:both">
 	</div>
+
 </script>
 
 <script id="helper-input-tpl" type="text/x-jquery-tmpl">
@@ -63,7 +64,13 @@
 </script>
 
 <script id="container-header-tpl" type="text/x-jquery-tmpl">
-	<div class="helper-fieldset-tab" data-path="schema.properties">
+	<div class="helper-fieldset-tab" data-path="${path}">
+		<div class="helpar-fieldset-tab-title">Main container</div>
+	</div>
+</script>
+
+<script id="container-header-tpl-2" type="text/x-jquery-tmpl">
+	<div class="helper-fieldset-tab" data-path="${path}">
 	<div class="helpar-fieldset-tab-title">Main container</div>
 	<div class="helpar-fieldset-tab-header-cell" >Field name</div>
 	<div class="helpar-fieldset-tab-header-cell-250">Field label</div>
@@ -76,13 +83,11 @@
 <script type="text/javascript">
 	jQuery(document).ready(function($) {
 
+		/* short nodes references */
 		_fs = '.alpaca-fieldset';
-		_fic = '.alpaca-fieldset-item-container';
+		_ic = '.alpaca-fieldset-item-container';
 		_ic_key = 'data-alpaca-item-container-item-key';
 		_dfc = 'data-first-container';
-			
-		window.fieldsCounter = 0;
-		window.targetPath = 'schema.properties';
 			
 		var data = {
 	    /* ----------------------------------------------------------------------- */
@@ -92,17 +97,25 @@
 	    	"schema": {
 				"type": "object",
 				"properties": {}
-		    },
-		    "view":"VIEW_WEB_DISPLAY"
+		    }, 
+		    "postRender": function(control) {
+				/* removed on bottom this code */
+		    }
+		   ,"view":"VIEW_WEB_DISPLAY_LIST"
+		    
 		};				
-        /* ----------------------------------------------------------------------- */
-
-		window._parent;	
+        /* ----------------------------------- */
+		/* ALPACAJS UX EDITOR CLASS version 0.3  */
+		/* author: Grzegorz Durtan (dadmor)    */
+		/* license: GPL2                       */
 		
 		var _UXFORM = {
+			/* DATA */
+			path : '/',
+			fields_counter : 0,
+			/* METHODS */
 		    render_field_options : function(_this){
-		    	//console.log('%c -- render_field_options ------', 'background: #222; color: #bada55');               
-		        //tb_show('Field options','#TB_inline?height=360&width=300&inlineId=prev');
+
 				var targetPath = this.get_options_target_path(_this);
 				var tease_array = [
 					{	
@@ -154,44 +167,51 @@
 		    },
 
 			add_new_element : function( type, _enum ){
-				//console.log('%c -- add_new_element ----------', 'background: #222; color: #bada55');
-				//path = window.targetPath + '.' + "new_" + type + "_" + window.fieldsCounter;
-				path = window.targetPath + '.' + "element_" + window.fieldsCounter;
-				//console.log('%c path:'+path, 'background: #ccc; color: blue');
-				_.deepSet(data, path+'.type', type);
-				//_.deepSet(data, path+'.title', "New element");
-				//_.deepSet(data, path+'.description', "example description");
 
+				/* Update json data (schema) */
+				path = this.create_schema_path(this.path) + "element_" + this.fields_counter;
+				
+				_.deepSet(data, path+'.type', type);
 			    if(_enum != ''){
 			    	_.deepSet(data, path+'.enum', _enum);
 			    }
-
 			    if(type == 'object'){
 			    	_.deepSet(data, path+'.type', type);
 				 	_.deepSet(data, path+'.title', "Object title");
 				 	_.deepSet(data, path+'.properties', false);
 		    	}
-
 		    	if(type == 'array'){
 			    	_.deepSet(data, path+'.type', type);
 				 	_.deepSet(data, path+'.items', false);
 				}
-
-			    window.fieldsCounter ++;
-			    
+			    this.fields_counter ++;
 			    $('#main_container').children().remove();
-
-			    //console.log(data);
 			    funcrion_render_alpaca(data);
 			},
-			change_path_deep : function(_this){
 
-				window.targetPath = [];
-				if( _this.parent(_fs).attr(_dfc) != 'true'){
-					this.objects_array(_this);
+			change_path : function(_path){
+				
+				this.path = _path;
+			},
+
+			create_schema_path : function(_path){
+				
+				var schema_path = 'schema.properties.';
+				
+				if(_path != '/'){
+
+					_path = _path.split("/");
+					$.each(_path, function( index, value ) {
+					 	if(index > 0){
+ 							schema_path = schema_path + value + '.properties.';
+					 	}
+					});
 				}else{
-					window.targetPath = 'schema.properties';
+					//var schema_path = 'schema.properties.';
 				}
+
+				
+				return schema_path;
 			},
 
 			remove_element : function( _this ){
@@ -202,25 +222,9 @@
 				}else{
 					window.targetPath = 'schema.properties';
 				}
-				this.deepDelete(window.targetPath+'.'+_this.closest(_fic).attr(_ic_key), data);
+				this.deepDelete(window.targetPath+'.'+_this.closest(_ic).attr(_ic_key), data);
 				$('#main_container').children().remove();
 			    funcrion_render_alpaca(data);
-
-			},
-
-			objects_array : function( _this ){
-				
-				target = _this.attr('data-path');
-				target +=  window.targetPath;
-				window.targetPath = '.' + target;
-				window._parent = _this.parent(_fs).parents(_fs).children('.helper-fieldset-tab');
-
-				if(window._parent.attr('data-path') != 'schema.properties'){
-					this.objects_array(window._parent);
-				}else{
-					window.targetPath = 'schema.properties'+window.targetPath
-					return false;
-				}
 			},
 
 			deepDelete : function(target, context) {
@@ -232,23 +236,30 @@
 			    delete context[target];
 			},
 
-			deepADD : function(target, context) {
-			  context = context || window;
-			  var targets = target.split('.');
-			  if (targets.length > 1)
-			    this.deepDelete(targets.slice(1).join('.'), context[targets[0]]);
-			  else
-			    delete context[target];
-			},
+			swith_fields_to_min_mode : function (control){
 
-			swith_fields_to_min_mode : function (){
+				$('#container-header-tpl').tmpl([{}]).prependTo($('#main_container'));
 
-				/* build first fieldset */
+				/* reference to class instance */
+				_this = this;
+				
+				/* build first fieldset marker */
 				$("#main_container").children(_fs).attr(_dfc,'true');
-				$('#container-header-tpl').tmpl([{}]).prependTo(_fs);
+
+				/* add paths to all items containers */
+				$( _ic ).each(function( index ) {
+					var alpaca_field = control.childrenByPropertyId[$(this).attr('data-alpaca-item-container-item-key')];
+					$(this).attr('data-type',alpaca_field['type']);
+					$(this).attr('data-path',alpaca_field['path']);
+
+					if(alpaca_field['type'] == 'object'){
+						$('#container-header-tpl').tmpl([{}]).prependTo(this);
+					}
+
+				});
 
 				/* add helpers to editor mode */
-				$( _fic ).each(function( index ) {
+				/*$( _ic ).each(function( index ) {
 						
 						$( this ).append('<div style="position:absolute; left:5px; top:5px" class="helper-object-name">' + $(this).attr(_ic_key) + '</div>');
 						$( this ).append('<div style="position:absolute; right:5px; top:5px; text-decoration:underline; color:#687A7E" class="helper-object-remove">[remove]</div>');
@@ -259,10 +270,10 @@
 						$( this ).find('legend').css('display','none');
 						$( this ).css({"border":"0px","background":"none","box-shadow":"none"});
 
-						/* add path marker */
+						
 						$( this ).find('.helper-fieldset-tab').attr('data-path',$(this).attr(_ic_key)+'.properties'); 
 					}
-				});
+				});*/
 			
 			},
 
@@ -270,8 +281,8 @@
 				
 				var targetPath = this.get_options_target_path(_this)+'.'+$(_this).attr('name');
 				_.deepSet(data, targetPath, $(_this).val());
-
 			},
+
 			get_option_value : function(label){
 				var output = _.deepGet(data, label);
 				if(output != undefined){
@@ -279,11 +290,11 @@
 				}else{
 					return "";
 				}
-				
 			},
+
 			get_options_target_path : function(_this){
 				
-				var key = _this.closest(_fic).attr(_ic_key);
+				var key = _this.closest(_ic).attr(_ic_key);
 				var opt_pth = window.targetPath;
 				opt_pth = opt_pth.substring(7);
 				opt_pth = opt_pth.replace(/properties/g, "fields");
@@ -292,6 +303,7 @@
 			}
 
 		};
+		/* ----------------------------------- */
 
 		/* ACTIONS EVENTS HANDLERS */
 
@@ -333,9 +345,9 @@
 
 		$(document).on("click", "div.helper-fieldset-tab", function(e) { 
 		//$('fieldset').live('click', function(e) {
-			_UXFORM.change_path_deep( $(this) );
-			$('.helper-fieldset-tab').removeClass('helper-selected');
-			$(this).addClass('helper-selected');
+			_UXFORM.change_path( $(this).parent().attr('data-path') );
+			$('.helper-fieldset-tab').parent().removeClass('helper-selected');
+			$(this).parent().addClass('helper-selected');
 			e.stopPropagation();
 		});
 
@@ -354,11 +366,13 @@
 			}
 			$("#schema_output").text(JSON.stringify(data['schema']));
 			$("#options_output").text(JSON.stringify(data['options']));
-	    	
 	    	$("#main_container").alpaca(data);
+
         }
 
 	    funcrion_render_alpaca(data);
 		 
 	});
+
+
 </script>
