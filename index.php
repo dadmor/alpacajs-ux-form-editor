@@ -97,26 +97,30 @@
 	    	"schema": {
 				"type": "object",
 				"properties": {}
-		    }, 
+			}, 
 		    "postRender": function(control) {
 				/* removed on bottom this code */
-		    }
-		   ,"view":"VIEW_WEB_DISPLAY_LIST"
+		    },"view":"VIEW_WEB_DISPLAY_LIST"
 		    
 		};				
         /* ----------------------------------- */
-		/* ALPACAJS UX EDITOR CLASS version 0.3  */
+		/* ALPACAJS UX EDITOR CLASS version 1.0  */
 		/* author: Grzegorz Durtan (dadmor)    */
 		/* license: GPL2                       */
 		
 		var _UXFORM = {
 			/* DATA */
-			path : '/',
+			path : '',
+			paths_helper:{
+				'keys_array' : [],
+				'acctual_schema_path' : 'schema.properties.',
+				'acctual_options_path' : ''
+			},
 			fields_counter : 0,
 			/* METHODS */
 		    render_field_options : function(_this){
 
-				var targetPath = this.get_options_target_path(_this);
+				var targetPath = this.paths_helper.acctual_options_path;
 				var tease_array = [
 					{	
 						'label':'label',
@@ -169,7 +173,8 @@
 			add_new_element : function( type, _enum ){
 
 				/* Update json data (schema) */
-				path = this.create_schema_path(this.path) + "element_" + this.fields_counter;
+				path = this.paths_helper.acctual_schema_path + "element_" + this.fields_counter;
+				//alert(path);
 				
 				_.deepSet(data, path+'.type', type);
 			    if(_enum != ''){
@@ -238,48 +243,70 @@
 
 			swith_fields_to_min_mode : function (control){
 
-				$('#container-header-tpl').tmpl([{}]).prependTo($('#main_container'));
-
 				/* reference to class instance */
 				_this = this;
 				
-				/* build first fieldset marker */
-				$("#main_container").children(_fs).attr(_dfc,'true');
-
-				/* add paths to all items containers */
 				$( _ic ).each(function( index ) {
-					var alpaca_field = control.childrenByPropertyId[$(this).attr('data-alpaca-item-container-item-key')];
-					$(this).attr('data-type',alpaca_field['type']);
-					$(this).attr('data-path',alpaca_field['path']);
 
-					if(alpaca_field['type'] == 'object'){
-						$('#container-header-tpl').tmpl([{}]).prependTo(this);
+					if(  $(this).children('fieldset').hasClass('alpaca-fieldset')  ){
+						$( this ).find('legend').html('<span>'+$(this).attr('data-alpaca-item-container-item-key')+'</span> <span> [click to add elements inside me]</span>');
+					}else{
+						$( this ).html('<div>'+$(this).attr('data-alpaca-item-container-item-key')+'</div>');
 					}
 
 				});
+		
+			},
+			// CREARTE ALPACA PATHS METHODS
+			set_form_keys_array : function(_this){
+				
+				
+				this.paths_helper.keys_array.push(_this.attr('data-alpaca-item-container-item-key'))
+				var find_parent = _this.parents('li');
+				try {
+				   find_parent[0]['localName']
+				   this.set_form_keys_array(find_parent );
+				}
+				catch (e) {
+					this.paths_helper.keys_array.reverse();
+					this.set_schema_path(this.paths_helper.keys_array);
+					this.set_options_path(this.paths_helper.keys_array);
+					//return this.paths_helper.keys_array;
+				}
 
-				/* add helpers to editor mode */
-				/*$( _ic ).each(function( index ) {
-						
-						$( this ).append('<div style="position:absolute; left:5px; top:5px" class="helper-object-name">' + $(this).attr(_ic_key) + '</div>');
-						$( this ).append('<div style="position:absolute; right:5px; top:5px; text-decoration:underline; color:#687A7E" class="helper-object-remove">[remove]</div>');
-
-					if( $( this ).children().get(0).nodeName == 'FIELDSET'){
-						
-						$( this ).children().css('display','block');
-						$( this ).find('legend').css('display','none');
-						$( this ).css({"border":"0px","background":"none","box-shadow":"none"});
-
-						
-						$( this ).find('.helper-fieldset-tab').attr('data-path',$(this).attr(_ic_key)+'.properties'); 
-					}
-				});*/
-			
+			},
+			set_schema_path : function(form_keys_array){
+				
+				var path = 'schema.properties.'
+				$.each(form_keys_array, function( index, value ) {
+					path = path+value;
+					if( _.deepGet(data, path+'.type') == 'object' ){
+						path = path+'.properties.';
+					}	
+					if( _.deepGet(data, path+'.type') == 'array' ){
+						path = path+'.items.';
+					}					
+				});
+				this.paths_helper.acctual_schema_path = path;
+			},
+			set_options_path : function(form_keys_array){
+				
+				var path = 'options.fields.'
+				$.each(form_keys_array, function( index, value ) {
+					path = path+value;
+					if( _.deepGet(data, path+'.type') == 'object' ){
+						path = path+'.fields.';
+					}	
+					if( _.deepGet(data, path+'.type') == 'array' ){
+						path = path+'.items.';
+					}					
+				});
+				this.paths_helper.acctual_options_path = path;
 			},
 
 			add_option_value : function(_this){
 				
-				var targetPath = this.get_options_target_path(_this)+'.'+$(_this).attr('name');
+				var targetPath = this.paths_helper.acctual_options_path + '.'+$(_this).attr('name');
 				_.deepSet(data, targetPath, $(_this).val());
 			},
 
@@ -290,17 +317,9 @@
 				}else{
 					return "";
 				}
-			},
-
-			get_options_target_path : function(_this){
-				
-				var key = _this.closest(_ic).attr(_ic_key);
-				var opt_pth = window.targetPath;
-				opt_pth = opt_pth.substring(7);
-				opt_pth = opt_pth.replace(/properties/g, "fields");
-				opt_pth = 'options.'+opt_pth+'.'+key;
-				return opt_pth;
 			}
+
+			
 
 		};
 		/* ----------------------------------- */
@@ -312,8 +331,21 @@
 			//e.stopPropagation();
 		});
 
-		$(document).on("click", "div.alpaca-fieldset-item-container", function(e) { 
-		//$(".alpaca-fieldset-item-container").live('click', function(e) {  
+		$(document).on("click", "li.alpaca-fieldset-item-container", function(e) { 
+		//$(".alpaca-fieldset-item-container").live('click', function(e) {
+
+			if(  $(this).children('fieldset').hasClass('alpaca-fieldset')  ){
+				$(this).css('border','1px solid blue');
+			}else{
+				$(this).parents('li').css('border','1px solid rgb(95,148,156)');
+				$(this).parents('li').css('background','rgba(95,148,156,0.1)');
+			}		
+			
+
+			_UXFORM.paths_helper.keys_array = [];
+			_UXFORM.set_form_keys_array( $(this) );
+			//console.log(this.paths_helper.keys_array);  
+
 			_UXFORM.render_field_options($(this));
 			e.stopPropagation();
 	    });
@@ -343,13 +375,15 @@
 			_UXFORM.add_new_element( 'array' , '' );
 		});
 
-		$(document).on("click", "div.helper-fieldset-tab", function(e) { 
+
+
+		/*$(document).on("click", "div.helper-fieldset-tab", function(e) { 
 		//$('fieldset').live('click', function(e) {
 			_UXFORM.change_path( $(this).parent().attr('data-path') );
 			$('.helper-fieldset-tab').parent().removeClass('helper-selected');
 			$(this).parent().addClass('helper-selected');
 			e.stopPropagation();
-		});
+		});*/
 
 		$(document).on("change", "input.input-helper", function(e) { 
 			if($(this).attr('data-type') == 'option'){
