@@ -172,3 +172,9 @@ fieldset{
 	border: 2px solid rgb(95,148,156);
 	background: rgba(95,148,156,0.1);
 }
+
+.helper-object-remove{
+	position:absolute;
+	right:5;
+	top:5;
+}
