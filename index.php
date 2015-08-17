@@ -98,9 +98,7 @@
 				"type": "object",
 				"properties": {}
 			}, 
-		    "postRender": function(control) {
-				/* removed on bottom this code */
-		    },"view":"VIEW_WEB_DISPLAY_LIST"
+		    "view":"VIEW_WEB_DISPLAY_LIST"
 		    
 		};				
         /* ----------------------------------- */
@@ -172,11 +170,13 @@
 
 			add_new_element : function( type, _enum ){
 
+				var element_name = "element_" + this.fields_counter;
 				/* Update json data (schema) */
-				path = this.paths_helper.acctual_schema_path + "element_" + this.fields_counter;
+				path = this.paths_helper.acctual_schema_path + element_name;
 				//alert(path);
 				
 				_.deepSet(data, path+'.type', type);
+			   
 			    if(_enum != ''){
 			    	_.deepSet(data, path+'.enum', _enum);
 			    }
@@ -270,7 +270,7 @@
 				catch (e) {
 					this.paths_helper.keys_array.reverse();
 					this.set_schema_path(this.paths_helper.keys_array);
-					this.set_options_path(this.paths_helper.keys_array);
+					this.set_options_path(this.paths_helper.keys_array);				
 					//return this.paths_helper.keys_array;
 				}
 
@@ -279,6 +279,9 @@
 				
 				var path = 'schema.properties.'
 				$.each(form_keys_array, function( index, value ) {
+					if(value == undefined){
+						return false;
+					}
 					path = path+value;
 					if( _.deepGet(data, path+'.type') == 'object' ){
 						path = path+'.properties.';
@@ -287,12 +290,17 @@
 						path = path+'.items.';
 					}					
 				});
+
 				this.paths_helper.acctual_schema_path = path;
+				
 			},
 			set_options_path : function(form_keys_array){
 				
 				var path = 'options.fields.'
 				$.each(form_keys_array, function( index, value ) {
+					if(value == undefined){
+						return false;
+					}
 					path = path+value;
 					if( _.deepGet(data, path+'.type') == 'object' ){
 						path = path+'.fields.';
@@ -302,6 +310,11 @@
 					}					
 				});
 				this.paths_helper.acctual_options_path = path;
+			},
+			colorize_path : function(path){
+				path.reverse();
+				$("#main_container li").removeClass('alpaca_container_selected');
+				$("#main_container li[data-alpaca-item-container-item-key='" + path[0] + "']" ).addClass('alpaca_container_selected');
 			},
 
 			add_option_value : function(_this){
@@ -333,19 +346,15 @@
 
 		$(document).on("click", "li.alpaca-fieldset-item-container", function(e) { 
 		//$(".alpaca-fieldset-item-container").live('click', function(e) {
-
-			if(  $(this).children('fieldset').hasClass('alpaca-fieldset')  ){
-				$(this).css('border','1px solid blue');
-			}else{
-				$(this).parents('li').css('border','1px solid rgb(95,148,156)');
-				$(this).parents('li').css('background','rgba(95,148,156,0.1)');
-			}		
 			
-
+			if(  $(this).children('fieldset').hasClass('alpaca-fieldset')  ){
+				var _target = $(this);
+			}else{			
+				var _target = $(this).parents('li');
+			}	
 			_UXFORM.paths_helper.keys_array = [];
-			_UXFORM.set_form_keys_array( $(this) );
-			//console.log(this.paths_helper.keys_array);  
-
+			_UXFORM.set_form_keys_array( _target );
+			_UXFORM.colorize_path(_UXFORM.paths_helper.keys_array);
 			_UXFORM.render_field_options($(this));
 			e.stopPropagation();
 	    });
@@ -397,6 +406,7 @@
 
 			data["postRender"] = function(control){
 				_UXFORM.swith_fields_to_min_mode(control);
+				_UXFORM.colorize_path(_UXFORM.paths_helper.keys_array);
 			}
 			$("#schema_output").text(JSON.stringify(data['schema']));
 			$("#options_output").text(JSON.stringify(data['options']));

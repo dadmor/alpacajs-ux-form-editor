@@ -99,7 +99,6 @@ ol{
 	border-radius: 2px;
 }
 .alpaca-fieldset-item-container:hover{
-	background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAMElEQVQIW2Pcc/vBf2cVeYa9dx4ywADjfyBAFgBJMIJUwpUAGSBdKIIwY+CCyOYCAJr8HdrUl9gSAAAAAElFTkSuQmCC) repeat;
 	cursor:pointer;
 }
 
@@ -164,6 +163,12 @@ fieldset{
 .helper-item-details .label div{
 	font-size:12px;
 }
-.helper-selected{
-	background: #DAD8B6 !important; 
+
+.alpaca_container_hover{
+	background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAMElEQVQIW2Pcc/vBf2cVeYa9dx4ywADjfyBAFgBJMIJUwpUAGSBdKIIwY+CCyOYCAJr8HdrUl9gSAAAAAElFTkSuQmCC) repeat;
+}
+
+.alpaca_container_selected{
+	border: 2px solid rgb(95,148,156);
+	background: rgba(95,148,156,0.1);
 }
