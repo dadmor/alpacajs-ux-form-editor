@@ -15,7 +15,7 @@
 	<h1 id="form-title">Form creator</h1>
 	<div id="main_container" data-path="/" style="float:left; width:70%">
 	</div>
-	<div id="forms-elements" style="float:right: width:25%; text-align:center">
+	<div id="forms-elements" style="float:right: width:25%; text-align:center; position:fixed; right:20px">
 		<a id="add_input" href="#" class="button action" style="width:200px; margin-bottom:2px">input text</a><Br/>
 		<a id="add_select" href="#" class="button action" style="width:200px; margin-bottom:2px">multi choice</a><Br/>
 		<a id="add_checkbox" href="#" class="button action" style="width:200px; margin-bottom:2px">single checkbox</a><Br/>
@@ -85,7 +85,6 @@
 
 			_UXFORM.paths_helper.keys_array = [];
 			_UXFORM.get_paths( $(this).parent() );
-
 			_UXFORM.remove_element( $(this).parent() );
 			
 		});
@@ -98,7 +97,12 @@
 			_UXFORM.get_paths( $(this) );
 
 			_UXFORM.colorize_path(_UXFORM.paths_helper.keys_array);
-			//_UXFORM.render_field_options($(this));
+			_UXFORM.render_field_options($(this));
+
+			$('html, body').animate({
+		        scrollTop: parseInt($(this).offset().top) - 20
+		    }, 200);
+		    
 	    });
 
 		$(document).on("click", "div.helper-item-details", function(e) { 
@@ -137,8 +141,6 @@
 			window.update_textareas(_UXFORM.data.options,_UXFORM.data.schema);
 
 		});
-
-
 
 		/* INIT  */
 	    
@@ -228,6 +230,24 @@
 		    });
 
 		}
+
+		$.fn.scrollTo = function( target, options, callback ){
+  if(typeof options == 'function' && arguments.length == 2){ callback = options; options = target; }
+  var settings = $.extend({
+    scrollTarget  : target,
+    offsetTop     : 50,
+    duration      : 500,
+    easing        : 'swing'
+  }, options);
+  return this.each(function(){
+    var scrollPane = $(this);
+    var scrollTarget = (typeof settings.scrollTarget == "number") ? settings.scrollTarget : $(settings.scrollTarget);
+    var scrollY = (typeof scrollTarget == "number") ? scrollTarget : scrollTarget.offset().top + scrollPane.scrollTop() - parseInt(settings.offsetTop);
+    scrollPane.animate({scrollTop : scrollY }, parseInt(settings.duration), settings.easing, function(){
+      if (typeof callback == 'function') { callback.call(this); }
+    });
+  });
+}
 		 
 	});
 
