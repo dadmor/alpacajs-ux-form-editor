@@ -93,11 +93,19 @@
 		//$(".alpaca-fieldset-item-container").live('click', function(e) {
 			e.stopPropagation();
 
+			if( $(this).hasClass('alpaca_container_selected') ){
+				$(this).find('.helper-item-details').remove();
+			}else{
+				_UXFORM.render_field_options($(this));
+			}
+
 			_UXFORM.paths_helper.keys_array = [];
 			_UXFORM.get_paths( $(this) );
 
 			_UXFORM.colorize_path(_UXFORM.paths_helper.keys_array);
-			_UXFORM.render_field_options($(this));
+			
+			
+			
 
 			$('html, body').animate({
 		        scrollTop: parseInt($(this).offset().top) - 20
