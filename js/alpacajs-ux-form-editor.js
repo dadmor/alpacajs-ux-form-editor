@@ -4,17 +4,7 @@
 		_ic_key = 'data-alpaca-item-container-item-key';
 		_dfc = 'data-first-container';
 			
-		var data = {
-		/* ----------------------------------------------------------------------- */
-			"options": {
-				"fields": {}
-			},
-			"schema": {
-				"type": "object",
-				"properties": {}
-			}, 
-			"view":"VIEW_WEB_DISPLAY_LIST"
-		};
+		
 		/* ----------------------------------- */
 		/* ALPACAJS UX EDITOR CLASS version 1.0  */
 		/* author: Grzegorz Durtan (dadmor)    */
@@ -23,6 +13,17 @@
 		var _UXFORM = {
 			
 			/* PROPERTIES */
+			data : {
+		
+				"options": {
+					"fields": {}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {}
+				}, 
+				"view":"VIEW_WEB_DISPLAY_LIST"
+			},
 			
 			path : '',
 			paths_helper:{
@@ -33,6 +34,19 @@
 			fields_counter : 0,
 			
 			/* METHODS */
+			funcrion_render_alpaca : function (_data){
+				/* -------------------------------------- */
+				this.data = _data;
+				_this = this;
+				/* -------------------------------------- */
+				_data["postRender"] = function(control){
+					_this.swith_fields_to_min_mode(control);
+					_this.colorize_path(_this.paths_helper.keys_array);
+				}
+				$("#schema_output").text(JSON.stringify(_data['schema']));
+				$("#options_output").text(JSON.stringify(_data['options']));
+		    	$("#main_container").alpaca(_data);
+	        },
 
 			render_field_options : function(_this){
 				var targetPath = this.paths_helper.acctual_options_path;
@@ -86,39 +100,40 @@
 
 			add_new_element : function( type, _enum ){
 				
-				var element_name = "element_" + this.fields_counter;
+				var rnd = Math.floor(Math.random() * 899999) + 100000;
+				var element_name = "element_" + rnd; // + "_" + this.fields_counter;
 				
 				/* Update json data (schema) */
 				schema_path = this.paths_helper.acctual_schema_path + element_name;
 				options_path = this.paths_helper.acctual_schema_path + element_name;
 				
-				_.deepSet(data, schema_path+'.type', type);
+				_.deepSet(this.data, schema_path+'.type', type);
 
 				if(_enum != ''){
-					_.deepSet(data, schema_path+'.enum', _enum);
+					_.deepSet(this.data, schema_path+'.enum', _enum);
 				}
 				if(type == 'object'){
-					_.deepSet(data, schema_path+'.type', type);
-					_.deepSet(data, schema_path+'.title', "Object title");
-					_.deepSet(data, schema_path+'.properties', false);
+					_.deepSet(this.data, schema_path+'.type', type);
+					_.deepSet(this.data, schema_path+'.title', "Object title");
+					_.deepSet(this.data, schema_path+'.properties', false);
 				}
 				if(type == 'array'){
-					_.deepSet(data, schema_path+'.type', type);
-					_.deepSet(data, schema_path+'.items', false);
-					_.deepSet(data, schema_path+'.items.type', 'object');
-					_.deepSet(data, schema_path+'.items.properties', 'false');
+					_.deepSet(this.data, schema_path+'.type', type);
+					_.deepSet(this.data, schema_path+'.items', false);
+					_.deepSet(this.data, schema_path+'.items.type', 'object');
+					_.deepSet(this.data, schema_path+'.items.properties', 'false');
 				}
 				this.fields_counter ++;
 				$('#main_container').children().remove();
-				funcrion_render_alpaca(data);
+				this.funcrion_render_alpaca(this.data);
 			},
 
 			
 
 			remove_element : function( _this ){
-				this.deepDelete(this.paths_helper.acctual_schema_path+_this.parent().attr(_ic_key), data);
+				this.deepDelete(this.paths_helper.acctual_schema_path+_this.parent().attr(_ic_key), this.data);
 				$('#main_container').children().remove();
-				funcrion_render_alpaca(data);
+				this.funcrion_render_alpaca(this.data);
 
 			},
 
@@ -138,7 +153,7 @@
 					if(  $(this).children('fieldset').hasClass('alpaca-fieldset')  ){
 						$( this ).find('legend').html('<span>'+$(this).attr(_ic_key)+'</span> <span> [click to add elements inside me]</span>');
 					}else{
-						$( this ).html('<div>'+$(this).attr(_ic_key)+'</div>');
+						$( this ).html('<div class="helper-object-key">'+$(this).attr(_ic_key)+'</div>');
 					}
 					$( this ).append('<div class="helper-object-remove">[remove]</div>')
 				});
@@ -163,6 +178,7 @@
 				var schema_path = 'schema.properties.';
 				var options_path = 'options.fields.';
 				
+				_this = this;
 
 				$.each(form_keys_array, function( index, value ) {
 					
@@ -172,11 +188,11 @@
 					schema_path = schema_path+value;
 					options_path = options_path+value;
 
-					if( _.deepGet(data, schema_path+'.type') == 'object' ){
+					if( _.deepGet(_this.data, schema_path+'.type') == 'object' ){
 						schema_path = schema_path+'.properties.';
 						options_path = options_path+'.fields.';
 					}	
-					if( _.deepGet(data, schema_path+'.type') == 'array' ){
+					if( _.deepGet(_this.data, schema_path+'.type') == 'array' ){
 						schema_path = schema_path+'.items.properties.';
 						options_path = options_path+'.fields.items.';
 					}
@@ -184,6 +200,8 @@
 				});
 				this.paths_helper.acctual_schema_path = schema_path;
 				this.paths_helper.acctual_options_path = options_path;
+
+				//console.log()
 			},
 
 
@@ -203,11 +221,11 @@
 				
 				var targetPath = this.paths_helper.acctual_options_path + '.'  +$(_this).attr('name');
 				
-				_.deepSet(data, targetPath, $(_this).val());
+				_.deepSet(this.data, targetPath, $(_this).val());
 			},
 
 			get_option_value : function(label){
-				var output = _.deepGet(data, label);
+				var output = _.deepGet(this.data, label);
 				if(output != undefined){
 					return output;
 				}else{

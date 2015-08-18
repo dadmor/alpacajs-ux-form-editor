@@ -2,6 +2,9 @@
 #main_container{
 	font-family: arial;
 	font-size:13px;
+	min-height:200px;
+	border:1px dashed #ccc;
+	padding-right:10px;
 }
 #main_container fieldset{
 	border:0;
@@ -41,6 +44,7 @@ input[type="text"]:focus {
 	padding: 3px 1px;
 	font-size: 14px;
 	width: 100%;
+
 }
 .button{
 	padding:2px;
@@ -91,7 +95,11 @@ ol{
 	position:relative;
 	border:1px solid #B3B3B3; 
 	padding: 5px; 
-	background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAMElEQVQIW2N89+7df0FBQYb3798zwADjfyBAFgBJMIJUwpUAGSBdKIIwY+CCyOYCAOqoHyYVqHz5AAAAAElFTkSuQmCC) repeat;
+	background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAMElEQVQIW2N8/vx5PQMQSEpKNoJoEJ8RRCALgCQYQQRMBYwNFoQZATMGrB2mAmYMADr8GaJNv/jUAAAAAElFTkSuQmCC) repeat;
+	
+	
+	/*background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAMElEQVQIW2N89+7df0FBQYb3798zwADjfyBAFgBJMIJUwpUAGSBdKIIwY+CCyOYCAOqoHyYVqHz5AAAAAElFTkSuQmCC) repeat;
+	*/
 	box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.8);
 
 	margin-bottom:2px;
@@ -116,6 +124,10 @@ fieldset{
 	color:#444;
 	text-shadow:1px 1px 1px #FFFFFF;
 }
+.alpaca-fieldset-legend{
+	margin:0px -10px;
+	font-size:11px;
+}
 .alpaca-fieldset-helper{
 	/* display:none; */
 	}
@@ -132,6 +144,7 @@ fieldset{
 	font-size:16px;
 	margin:5px;
 }
+
 .helpar-fieldset-tab-header-cell{
 	float:left; font-size:11px; width:120px; margin:5px;
 }
@@ -145,6 +158,7 @@ fieldset{
 .helper-item-details{
 	/* background-color: #F7F7F7; */
 	background-color: rgba(255,255,255,0.5);
+	color:#4c585c;
 	margin-top:26px;
 	padding:10px;
 	margin-left:-5px;
@@ -171,6 +185,14 @@ fieldset{
 .alpaca_container_selected{
 	border: 2px solid rgb(95,148,156);
 	background: rgba(95,148,156,0.1);
+}
+
+.helper-object-key{
+	font-size:14px;
+	color:#5f6b70;
+	font-weight: 600;
+	font-smooth: 2em;
+	text-shadow: 0px 0px 2px #dddddd;
 }
 
 .helper-object-remove{

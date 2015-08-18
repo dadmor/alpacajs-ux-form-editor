@@ -67,6 +67,8 @@
 <script type="text/javascript">
 	jQuery(document).ready(function($) {
 
+		
+
 		/* ACTIONS EVENTS HANDLERS */
 
 		$(document).on("click", "div .helper-object-remove", function(e) { 
@@ -131,22 +133,33 @@
 			
 		});
 
+
+
 		/* INIT  */
-	    funcrion_render_alpaca = function (data){
-
-			data["postRender"] = function(control){
-				_UXFORM.swith_fields_to_min_mode(control);
-				_UXFORM.colorize_path(_UXFORM.paths_helper.keys_array);
+	    
+	    <?php if(@$_POST["schema_output"] != ''){ ?>
+			
+			var data = {
+				"options":<?php echo $_POST["options_output"]; ?>,
+				"schema": <?php echo $_POST["schema_output"]; ?>, 
+				"view":"VIEW_WEB_DISPLAY_LIST"
 			}
-			$("#schema_output").text(JSON.stringify(data['schema']));
-			$("#options_output").text(JSON.stringify(data['options']));
-	    	$("#main_container").alpaca(data);
+			alert(data);
+			_UXFORM.funcrion_render_alpaca(data);
+	    
+	    <?php }else{ ?>
 
-        }
+ 			_UXFORM.funcrion_render_alpaca(_UXFORM.data);
 
-	    funcrion_render_alpaca(data);
+	    <?php } ?>  
+     	
+
+	   
+
+
 		 
 	});
 
 
 </script>
+
