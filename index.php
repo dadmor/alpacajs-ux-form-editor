@@ -77,17 +77,26 @@
 
 		$(document).on("click", "li.alpaca-fieldset-item-container", function(e) { 
 		//$(".alpaca-fieldset-item-container").live('click', function(e) {
-			
+			e.stopPropagation();
+
+
 			if(  $(this).children('fieldset').hasClass('alpaca-fieldset')  ){
-				var _target = $(this);
+				//alert('object');
 			}else{			
-				var _target = $(this).parents('li');
+				//alert('field');
 			}	
+
+		
 			_UXFORM.paths_helper.keys_array = [];
-			_UXFORM.set_form_keys_array( _target );
+			_UXFORM.get_paths( $(this) );
+			
+		
+
 			_UXFORM.colorize_path(_UXFORM.paths_helper.keys_array);
 			_UXFORM.render_field_options($(this));
-			e.stopPropagation();
+			
+
+			
 	    });
 
 		$(document).on("click", "div.helper-item-details", function(e) { 
@@ -116,7 +125,7 @@
 		});
 
 		$(document).on("change", "input.input-helper", function(e) { 
-			if($(this).attr('data-type') == 'option'){
+			if($(this).attr('data-type') == 'option'){				
 				_UXFORM.add_option_value($(this));
 			}
 			
