@@ -96,6 +96,9 @@
 				$('.alpaca-fieldset-item-container .helper-item-details').remove();
 				$('#helper-container-tpl').tmpl([{}]).appendTo(_this);
 				$('#helper-input-tpl').tmpl(tease_array).appendTo(_this.find('.helper-items-body'));
+
+				/* init wordpress extentions */
+				window.wordpress_autocomple_names();
 			},
 
 			add_new_element : function( type, _enum ){

@@ -25,6 +25,7 @@ input[type="text"] {
   padding: 5px;
   border: solid 1px #dcdcdc;
   transition: box-shadow 0.3s, border 0.3s;
+  color: #555353;
 }
 input[type="text"]:focus {
   outline: none;
@@ -199,4 +200,23 @@ fieldset{
 	position:absolute;
 	right:5;
 	top:5;
+}
+
+
+/* autocomplete */
+.ui-autocomplete{
+	background-color:#D4DADB;
+	width:30%;
+	font-size:13px;
+	line-height:18px;
+	padding: 10px;
+}
+
+.ui-autocomplete li{
+	list-style: none;
+	color:#666;
+}
+.ui-autocomplete li:hover{
+	color:#333;
+	cursor:pointer;
 }

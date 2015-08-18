@@ -1,5 +1,6 @@
 <!-- <script type="text/javascript" src="//code.jquery.com/jquery-1.11.1.min.js"></script> -->
 <script type="text/javascript" src="js/jquery.1.11.1.min.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 <script type="text/javascript" src="js/alpaca-core.min.js"></script>
 <script type="text/javascript" src="js/lodash.js"></script>
 <script type="text/javascript" src="js/lodash-deep.js"></script>
@@ -150,9 +151,67 @@
  			_UXFORM.funcrion_render_alpaca(_UXFORM.data);
 
 	    <?php } ?>  
+
+
+
+
+		window.wordpress_autocomple_names = function (){
+			/* WORDPRESS names mapping */
+			var availableNames = [
+				/* insert post */
+				'post_content',
+				'post_name',
+				'post_title',
+				'post_status',
+				'post_type',
+				'post_author',
+				'ping_status',
+				'default_ping_status',
+				'post_parent',
+				'menu_order',
+				'to_ping',
+				'pinged',
+				'post_password',
+				'guid',
+				'post_content_filtered',
+				'post_excerpt',
+				'post_date_gmt',
+				'comment_status',
+				'post_category',
+				'tags_input',
+				'tax_input',
+				'page_template',
+
+				/* insert user */
+				'user_pass',
+				'user_login',
+				'user_nicename',
+				'user_url',
+				'user_email',
+				'display_name',
+				'nickname',
+				'first_name',
+				'last_name',
+				'description',
+				'rich_editing',
+				'user_registered',
+				'role',
+				'jabber',
+				'aim',
+				'yim',
+		    ];
+		    $( "input[name='name']" ).autocomplete({
+		      source: availableNames
+		    });
+	   }
 		 
 	});
 
 
+
+
+
+
 </script>
 
+<input name="chuj" />
