@@ -29,8 +29,9 @@
 			paths_helper:{
 				'schema_keys_array' : [],
 				'acctual_schema_path' : 'schema.properties.',
-				'acctual_options_path' : 'options.fields.'
+				'acctual_options_path' : 'options.fields.',
 			},
+			selected_type : '',
 			fields_counter : 0,
 			
 			/* METHODS */
@@ -43,8 +44,10 @@
 					_this.swith_fields_to_min_mode(control);
 					_this.colorize_path(_this.paths_helper.keys_array);
 				}
-				$("#schema_output").text(JSON.stringify(_data['schema']));
-				$("#options_output").text(JSON.stringify(_data['options']));
+				
+				/* Helper function */
+				window.update_textareas(_data['options'],_data['schema']);
+		    	
 		    	$("#main_container").alpaca(_data);
 	        },
 
@@ -98,28 +101,61 @@
 				$('#helper-input-tpl').tmpl(tease_array).appendTo(_this.find('.helper-items-body'));
 
 				/* init wordpress extentions */
-				window.wordpress_autocomple_names();
+				
+				/* iam container */
+				if(  _this.children('fieldset').hasClass('alpaca-fieldset')  ){
+					window.wordpress_autocomple_names('wp_actions');
+				}
+				/* iam in container */
+				if(_this.parents('li').children('fieldset').hasClass('alpaca-fieldset')){
+					console.log(_this.parents('li').attr(_ic_key));
+					window.wordpress_autocomple_names(_this.parents('li').attr(_ic_key));	
+				}
+
 			},
 
 			add_new_element : function( type, _enum ){
 				
 				var rnd = Math.floor(Math.random() * 899999) + 100000;
-				var element_name = "element_" + rnd; // + "_" + this.fields_counter;
+				var element_name = "id_" + rnd; // + "_" + this.fields_counter;
 				
 				/* Update json data (schema) */
-				schema_path = this.paths_helper.acctual_schema_path + element_name;
-				options_path = this.paths_helper.acctual_schema_path + element_name;
+				schema_path = this.paths_helper.acctual_schema_path;
+				options_path = this.paths_helper.acctual_schema_path;
 				
-				_.deepSet(this.data, schema_path+'.type', type);
+				if( this.selected_type == 'object' ){
+					schema_path += '.properties.';
+					options_path += '.fields.';
+				}else{
+					if(this.selected_type != ''){
+						/* if selected textfield remove last key from path */
+						var rem = schema_path.split(".");
+						rem.pop();
+						schema_path = rem.join(".");
+						schema_path+='.';
 
+						var rem = options_path.split(".");
+						rem.pop();
+						options_path = rem.join(".");
+						options_path+='.';
+					}
+				}
+
+				schema_path += element_name;
+				options_path += element_name;
+
+				_.deepSet(this.data, schema_path+'.type', type);
+				
 				if(_enum != ''){
 					_.deepSet(this.data, schema_path+'.enum', _enum);
 				}
+
 				if(type == 'object'){
 					_.deepSet(this.data, schema_path+'.type', type);
 					_.deepSet(this.data, schema_path+'.title', "Object title");
 					_.deepSet(this.data, schema_path+'.properties', false);
 				}
+
 				if(type == 'array'){
 					_.deepSet(this.data, schema_path+'.type', type);
 					_.deepSet(this.data, schema_path+'.items', false);
@@ -135,12 +171,14 @@
 
 			remove_element : function( _this ){
 				
-				console.log(this.paths_helper.acctual_schema_path);
+				/* get parent to set path on parent */
+				var parent = _this.closest('li');
 				
 				this.deepDelete(this.paths_helper.acctual_schema_path, this.data);
-				//alert(target);
 				$('#main_container').children().remove();
 				this.funcrion_render_alpaca(this.data);
+
+				this.get_paths( parent );
 
 			},
 
@@ -158,7 +196,7 @@
 				_this = this;
 				$( _ic ).each(function( index ) {
 					if(  $(this).children('fieldset').hasClass('alpaca-fieldset')  ){
-						$( this ).find('legend').html('<span>'+$(this).attr(_ic_key)+'</span> <span> [click to add elements inside me]</span>');
+						$( this ).find('legend').html('<span class="title">'+$(this).attr(_ic_key)+'</span> <span> [click to add elements inside me]</span>');
 					}else{
 						$( this ).html('<div class="helper-object-key">'+$(this).attr(_ic_key)+'</div>');
 					}
@@ -184,32 +222,32 @@
 			prepare_paths : function(form_keys_array){
 				var schema_path = 'schema.properties.';
 				var options_path = 'options.fields.';
-				
 				_this = this;
-
 				$.each(form_keys_array, function( index, value ) {
-					
 					if(value == undefined){
 						return false;
 					}
-					schema_path = schema_path+value;
-					options_path = options_path+value;
+					schema_path = schema_path + value;
+					options_path = options_path + value;
 
-					if( _.deepGet(_this.data, schema_path+'.type') == 'object' ){
-						schema_path = schema_path+'.properties.';
-						options_path = options_path+'.fields.';
-					}	
-					if( _.deepGet(_this.data, schema_path+'.type') == 'array' ){
-						schema_path = schema_path+'.items.properties.';
-						options_path = options_path+'.fields.items.';
+					if (index != (form_keys_array.length-1)){
+						if( _.deepGet(_this.data, schema_path+'.type') == 'object' ){
+							schema_path = schema_path+'.properties.';
+							options_path = options_path+'.fields.';
+						}	
+						if( _.deepGet(_this.data, schema_path+'.type') == 'array' ){
+							schema_path = schema_path+'.items.properties.';
+							options_path = options_path+'.fields.items.';
+						}
+					}else{
+						_this.selected_type = _.deepGet(_this.data, schema_path+'.type');
 					}
-
 				});
 				this.paths_helper.acctual_schema_path = schema_path;
 				this.paths_helper.acctual_options_path = options_path;
-
-				//console.log()
+				console.log('Seleced path:'+schema_path);
 			},
+
 
 
 
@@ -222,12 +260,9 @@
 				$("#main_container li["+_ic_key+"='" + path[0] + "']" ).addClass('alpaca_container_selected');
 			},
 
-			add_option_value : function(_this){
-					
+			add_option_value : function(_this, name){
 				//this.paths_helper.keys_array
-				
-				var targetPath = this.paths_helper.acctual_options_path + '.'  +$(_this).attr('name');
-				
+				var targetPath = this.paths_helper.acctual_options_path + '.' +name;
 				_.deepSet(this.data, targetPath, $(_this).val());
 			},
 
@@ -238,6 +273,31 @@
 				}else{
 					return "";
 				}
-			}
+			},
+
+			add_schema_value : function(_this, name){
+				var targetPath = this.paths_helper.acctual_schema_path + '.' +name;
+				_.deepSet(this.data, targetPath, $(_this).val());
+			},
+
+			get_schema_value : function(label){
+				var output = _.deepGet(this.data, label);
+				if(output != undefined){
+					return output;
+				}else{
+					return "";
+				}
+			},
+			rename_schema_key : function(_this){
+				
+				var new_name = _this.val();
+				var old_name = _this.parents('li').attr(_ic_key);
+
+				console.log(this.paths_helper);
+				
+
+				return new_name;
+			},
+
 		};
 		/* ----------------------------------- */

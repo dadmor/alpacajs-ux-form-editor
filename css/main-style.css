@@ -1,4 +1,8 @@
 /* normalize - delete this section if you wand add editor into WordPress plugins*/
+#form-title{
+	color:#999;
+	border-top:1px dashed #ccc;
+}
 #main_container{
 	font-family: arial;
 	font-size:13px;
@@ -216,7 +220,7 @@ fieldset{
 	list-style: none;
 	color:#666;
 }
-.ui-autocomplete li:hover{
-	color:#333;
+.ui-autocomplete li:hover, li.ui-state-focus{
+	color:#333 !important;
 	cursor:pointer;
 }

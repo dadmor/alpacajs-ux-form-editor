@@ -12,7 +12,7 @@
 <link type="text/css" href="css/main-style.css" rel="stylesheet"/>
 
 <body>
-	<h1>Form creator</h1>
+	<h1 id="form-title">Form creator</h1>
 	<div id="main_container" data-path="/" style="float:left; width:70%">
 	</div>
 	<div id="forms-elements" style="float:right: width:25%; text-align:center">
@@ -66,7 +66,16 @@
 </script>
 
 <script type="text/javascript">
+
+	
+
+
 	jQuery(document).ready(function($) {
+
+		window.update_textareas = function(options,schema){
+			$("#schema_output").text(JSON.stringify(schema));
+			$("#options_output").text(JSON.stringify(options));
+		}
 
 		/* ACTIONS EVENTS HANDLERS */
 
@@ -77,11 +86,7 @@
 			_UXFORM.paths_helper.keys_array = [];
 			_UXFORM.get_paths( $(this).parent() );
 
-			// FIX to object path
-			if(  $(this).parent().children('fieldset').hasClass('alpaca-fieldset')  ){
-				alert('fix it: '+_UXFORM.paths_helper.acctual_schema_path);
-			}
-			_UXFORM.remove_element($(this).parent());
+			_UXFORM.remove_element( $(this).parent() );
 			
 		});
 
@@ -89,17 +94,11 @@
 		//$(".alpaca-fieldset-item-container").live('click', function(e) {
 			e.stopPropagation();
 
-			if(  $(this).children('fieldset').hasClass('alpaca-fieldset')  ){
-				//alert('object');
-			}else{			
-				//alert('field');
-			}	
-
 			_UXFORM.paths_helper.keys_array = [];
 			_UXFORM.get_paths( $(this) );
 
 			_UXFORM.colorize_path(_UXFORM.paths_helper.keys_array);
-			_UXFORM.render_field_options($(this));
+			//_UXFORM.render_field_options($(this));
 	    });
 
 		$(document).on("click", "div.helper-item-details", function(e) { 
@@ -128,11 +127,18 @@
 		});
 
 		$(document).on("change", "input.input-helper", function(e) { 
-			if($(this).attr('data-type') == 'option'){				
-				_UXFORM.add_option_value($(this));
-			}
 			
+			if($(this).attr('data-type') == 'option'){				
+				_UXFORM.add_option_value($(this), $(this).attr('name'));
+			}
+			if($(this).attr('data-type') == 'shema-key'){
+				var output = _UXFORM.rename_schema_key($(this));
+			}
+			window.update_textareas(_UXFORM.data.options,_UXFORM.data.schema);
+
 		});
+
+
 
 		/* INIT  */
 	    
@@ -150,60 +156,78 @@
 	    	/* standard init method */
  			_UXFORM.funcrion_render_alpaca(_UXFORM.data);
 
-	    <?php } ?>  
+	    <?php } ?>
 
 
-
-
-		window.wordpress_autocomple_names = function (){
+		window.wordpress_autocomple_names = function (data){
 			/* WORDPRESS names mapping */
-			var availableNames = [
-				/* insert post */
-				'post_content',
-				'post_name',
-				'post_title',
-				'post_status',
-				'post_type',
-				'post_author',
-				'ping_status',
-				'default_ping_status',
-				'post_parent',
-				'menu_order',
-				'to_ping',
-				'pinged',
-				'post_password',
-				'guid',
-				'post_content_filtered',
-				'post_excerpt',
-				'post_date_gmt',
-				'comment_status',
-				'post_category',
-				'tags_input',
-				'tax_input',
-				'page_template',
+			dictionary = {
+				'wp_actions':[
+					'wp_insert_post',
+					'wp_insert_user',
+					'wp_redirect'
+				],
+				'wp_insert_post':[
+					'post_content',
+					'post_name',
+					'post_title',
+					'post_status',
+					'post_type',
+					'post_author',
+					'ping_status',
+					'default_ping_status',
+					'post_parent',
+					'menu_order',
+					'to_ping',
+					'pinged',
+					'post_password',
+					'guid',
+					'post_content_filtered',
+					'post_excerpt',
+					'post_date_gmt',
+					'comment_status',
+					'post_category',
+					'tags_input',
+					'tax_input',
+					'page_template'
+				],
+				'wp_insert_user':[
+					'user_pass',
+					'user_login',
+					'user_nicename',
+					'user_url',
+					'user_email',
+					'display_name',
+					'nickname',
+					'first_name',
+					'last_name',
+					'description',
+					'rich_editing',
+					'user_registered',
+					'role',
+					'jabber',
+					'aim',
+					'yim'
+				]
+			};
 
-				/* insert user */
-				'user_pass',
-				'user_login',
-				'user_nicename',
-				'user_url',
-				'user_email',
-				'display_name',
-				'nickname',
-				'first_name',
-				'last_name',
-				'description',
-				'rich_editing',
-				'user_registered',
-				'role',
-				'jabber',
-				'aim',
-				'yim',
-		    ];
 		    $( "input[name='name']" ).autocomplete({
-		      source: availableNames
+		      source: dictionary[data],
+		      close: function( event, ui ) {
+		      	console.log(event);
+		        if($(this).attr('data-type') == 'shema-key'){
+					
+					var output = _UXFORM.rename_schema_key($(event.target));
+					$(event.target).parents('li').find('.helper-object-key').text(output);
+					/* OR */
+					$(event.target).parents('li').find('.alpaca-fieldset-legend').children('.title').text(output);
+					
+				}
+				window.update_textareas(_UXFORM.data.options,_UXFORM.data.schema);
+		      },
 		    });
-	   }
+
+		}
 		 
 	});
 
