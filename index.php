@@ -67,20 +67,26 @@
 <script type="text/javascript">
 	jQuery(document).ready(function($) {
 
-		
-
 		/* ACTIONS EVENTS HANDLERS */
 
 		$(document).on("click", "div .helper-object-remove", function(e) { 
 			
-			_UXFORM.remove_element($(this));
-			//e.stopPropagation();
+			e.stopPropagation();
+
+			_UXFORM.paths_helper.keys_array = [];
+			_UXFORM.get_paths( $(this).parent() );
+
+			// FIX to object path
+			if(  $(this).parent().children('fieldset').hasClass('alpaca-fieldset')  ){
+				alert('fix it: '+_UXFORM.paths_helper.acctual_schema_path);
+			}
+			_UXFORM.remove_element($(this).parent());
+			
 		});
 
 		$(document).on("click", "li.alpaca-fieldset-item-container", function(e) { 
 		//$(".alpaca-fieldset-item-container").live('click', function(e) {
 			e.stopPropagation();
-
 
 			if(  $(this).children('fieldset').hasClass('alpaca-fieldset')  ){
 				//alert('object');
@@ -88,17 +94,11 @@
 				//alert('field');
 			}	
 
-		
 			_UXFORM.paths_helper.keys_array = [];
 			_UXFORM.get_paths( $(this) );
-			
-		
 
 			_UXFORM.colorize_path(_UXFORM.paths_helper.keys_array);
 			_UXFORM.render_field_options($(this));
-			
-
-			
 	    });
 
 		$(document).on("click", "div.helper-item-details", function(e) { 
@@ -133,8 +133,6 @@
 			
 		});
 
-
-
 		/* INIT  */
 	    
 	    <?php if(@$_POST["schema_output"] != ''){ ?>
@@ -144,19 +142,14 @@
 				"schema": <?php echo $_POST["schema_output"]; ?>, 
 				"view":"VIEW_WEB_DISPLAY_LIST"
 			}
-			alert(data);
 			_UXFORM.funcrion_render_alpaca(data);
 	    
 	    <?php }else{ ?>
 
+	    	/* standard init method */
  			_UXFORM.funcrion_render_alpaca(_UXFORM.data);
 
 	    <?php } ?>  
-     	
-
-	   
-
-
 		 
 	});
 

@@ -131,13 +131,17 @@
 			
 
 			remove_element : function( _this ){
-				this.deepDelete(this.paths_helper.acctual_schema_path+_this.parent().attr(_ic_key), this.data);
+				
+				console.log(this.paths_helper.acctual_schema_path);
+				
+				this.deepDelete(this.paths_helper.acctual_schema_path, this.data);
+				//alert(target);
 				$('#main_container').children().remove();
 				this.funcrion_render_alpaca(this.data);
 
 			},
 
-			deepDelete : function(target, context) {
+			deepDelete : function(target, context) {				
 				context = context || window;
 				var targets = target.split('.');
 				if (targets.length > 1)
