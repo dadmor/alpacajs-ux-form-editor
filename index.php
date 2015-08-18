@@ -101,8 +101,8 @@
 
 			$('html, body').animate({
 		        scrollTop: parseInt($(this).offset().top) - 20
-		    }, 200);
-		    
+		    }, 300);
+
 	    });
 
 		$(document).on("click", "div.helper-item-details", function(e) { 

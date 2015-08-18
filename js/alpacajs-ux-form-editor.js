@@ -98,7 +98,17 @@
 					];
 				$('.alpaca-fieldset-item-container .helper-item-details').remove();
 				$('#helper-container-tpl').tmpl([{}]).appendTo(_this);
+				
+				$(_this).css('display','none');
+				$(_this).css('opacity', 0)
+				
 				$('#helper-input-tpl').tmpl(tease_array).appendTo(_this.find('.helper-items-body'));
+				
+				$(_this).slideDown(100);
+				$(_this).animate(
+				    { opacity: 1 },
+				    { queue: false, duration: 300 }
+				  )
 
 				/* init wordpress extentions */
 				
