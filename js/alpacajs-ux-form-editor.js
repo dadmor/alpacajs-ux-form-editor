@@ -291,19 +291,21 @@
 				});
 				this.paths_helper.acctual_schema_path = schema_path;
 				this.paths_helper.acctual_options_path = options_path;
-				console.log('Seleced path:'+schema_path);
+				//console.log('Seleced path:'+schema_path);
 			},
 
 			rename_schema_key : function( _this ){
 
 				var new_name = _this.val();
-				var old_name = _this.parents('li').attr(_ic_key);
-				var colection = this.get_parents_colection(this.paths_helper.acctual_schema_path);
-				
-				console.log(colection);
+				var old_name = _this.parents('li').attr( _ic_key );
+				var colection = this.get_parents_colection( this.paths_helper.acctual_schema_path );
 				var position = this.get_index_by_key( colection, old_name );
-				this.add_object_between_colection(colection,position,'new_object',{a:'b'});
-				alert('finished here');
+				var new_colection = this.add_object_between_colection( colection, position, new_name, colection[old_name] );
+				var path_to_set = this.get_path_without_last( this.paths_helper.acctual_schema_path );
+				
+				_.deepSet( this.data, path_to_set, new_colection );
+				this.deepDelete(this.paths_helper.acctual_schema_path, this.data);
+				//alert('finished here');
 			},
 
 			/* KEY COLECTIONS */
@@ -333,8 +335,12 @@
 				return _index;
 			},
 			add_object_between_colection : function(colection, position, obj_key, obj_val){
+				
 				var first_object = {};
 				var last_object = {};
+				var added_object = {};
+				
+				added_object[obj_key] = obj_val;
 				var counter = 0;
 				$.each(colection, function(index, value){
 					if(counter < position){
@@ -345,10 +351,7 @@
 					counter++	
 				});
 
-				console.log(first_object);
-
-				console.log(last_object);
-
+				return _.merge(first_object, added_object, last_object);
 
 			},
 
