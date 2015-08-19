@@ -1,6 +1,6 @@
 <!-- <script type="text/javascript" src="//code.jquery.com/jquery-1.11.1.min.js"></script> -->
 <script type="text/javascript" src="js/jquery.1.11.1.min.js"></script>
-<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script type="text/javascript" src="js/jquery-ui.js"></script>
 <script type="text/javascript" src="js/alpaca-core.min.js"></script>
 <script type="text/javascript" src="js/lodash.js"></script>
 <script type="text/javascript" src="js/lodash-deep.js"></script>
@@ -21,6 +21,12 @@
 		<a id="add_checkbox" href="#" class="button action" style="width:200px; margin-bottom:2px">single checkbox</a><Br/> -->
 		<a id="add_object" href="#" class="button action" style="width:200px; margin-bottom:2px">CONTAINER (fieldset)</a><Br/>
 		<a id="add_array" href="#" class="button action" style="width:200px; margin-bottom:2px">REPEATER (array)</a><Br/>
+		<div style="line-height:40px">WordPress Templates</div>
+		<a id="add_model_insert_post" href="#" class="button action" style="width:200px; margin-bottom:2px">wp_mail</a><Br/>
+		<a id="add_model_insert_post" href="#" class="button action" style="width:200px; margin-bottom:2px">wp_insert_post</a><Br/>
+		<a id="add_model_insert_post" href="#" class="button action" style="width:200px; margin-bottom:2px">wp_insert_user</a><Br/>
+		<a id="add_model_insert_post" href="#" class="button action" style="width:200px; margin-bottom:2px">wp_signon</a><Br/>
+		<a id="add_model_insert_post" href="#" class="button action" style="width:200px; margin-bottom:2px">wp_redirect</a><Br/>
 	</div>
 
 	<br style="clear:both"/>

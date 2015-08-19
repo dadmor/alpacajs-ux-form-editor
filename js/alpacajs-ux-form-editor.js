@@ -49,8 +49,8 @@
 					_this.colorize_path(_this.paths_helper.keys_array);
 					
 					/* sortable */
-					//$( "#main_container ol" ).sortable();
-					//$( "#main_container ol" ).disableSelection();
+					$( "#main_container ol" ).sortable();
+					$( "#main_container ol" ).disableSelection();
 				
 				}
 				
