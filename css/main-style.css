@@ -132,6 +132,7 @@ fieldset{
 .alpaca-fieldset-legend{
 	margin:0px -10px;
 	font-size:11px;
+	color:#585A5C;
 }
 .alpaca-fieldset-helper{
 	/* display:none; */
@@ -204,6 +205,7 @@ fieldset{
 	position:absolute;
 	right:5;
 	top:5;
+	color:#585A5C;
 }
 
 

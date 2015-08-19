@@ -166,8 +166,7 @@
 
 	    window.run_sortable = function(){
 
-    		$( "#main_container ol" ).sortable();
-    		$( "#main_container ol" ).disableSelection();
+    		
 
 	    }
 
@@ -245,5 +244,6 @@
 		    });
 		}
 	});
+
 </script>
 
