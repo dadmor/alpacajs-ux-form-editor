@@ -16,15 +16,17 @@
 	<div id="main_container" data-path="/" style="float:left; width:70%">
 	</div>
 	<div id="forms-elements" style="float:right: width:25%; text-align:center; position:fixed; right:20px">
-		<a id="add_input" href="#" class="button action" style="width:200px; margin-bottom:2px">input text</a><Br/>
-		<a id="add_select" href="#" class="button action" style="width:200px; margin-bottom:2px">multi choice</a><Br/>
-		<a id="add_checkbox" href="#" class="button action" style="width:200px; margin-bottom:2px">single checkbox</a><Br/>
-		<a id="add_object" href="#" class="button action" style="width:200px; margin-bottom:2px">fieldset (container)</a><Br/>
-		<a id="add_array" href="#" class="button action" style="width:200px; margin-bottom:2px">array (repeater)</a><Br/>
+		<a id="add_input" href="#" class="button action" style="width:200px; margin-bottom:2px">+ ADD FIELD (text)</a><Br/>
+		<!-- <a id="add_select" href="#" class="button action" style="width:200px; margin-bottom:2px">multi choice</a><Br/>
+		<a id="add_checkbox" href="#" class="button action" style="width:200px; margin-bottom:2px">single checkbox</a><Br/> -->
+		<a id="add_object" href="#" class="button action" style="width:200px; margin-bottom:2px">CONTAINER (fieldset)</a><Br/>
+		<a id="add_array" href="#" class="button action" style="width:200px; margin-bottom:2px">REPEATER (array)</a><Br/>
 	</div>
 
 	<br style="clear:both"/>
-
+	<br style="clear:both"/>
+	<br style="clear:both"/>
+	<br style="clear:both"/>
 	<h2>Form schema and options output</h2>
 	<form method="post" action="test/index.php">
 		<table style="width:100%">
@@ -67,9 +69,6 @@
 
 <script type="text/javascript">
 
-	
-
-
 	jQuery(document).ready(function($) {
 
 		window.update_textareas = function(options,schema){
@@ -103,9 +102,6 @@
 			_UXFORM.get_paths( $(this) );
 
 			_UXFORM.colorize_path(_UXFORM.paths_helper.keys_array);
-			
-			
-			
 
 			$('html, body').animate({
 		        scrollTop: parseInt($(this).offset().top) - 20
@@ -168,14 +164,25 @@
 
 	    <?php } ?>
 
+	    window.run_sortable = function(){
+
+    		$( "#main_container ol" ).sortable();
+    		$( "#main_container ol" ).disableSelection();
+
+	    }
+
 
 		window.wordpress_autocomple_names = function (data){
 			/* WORDPRESS names mapping */
 			dictionary = {
 				'wp_actions':[
+					'wp_mail',
+					'wp_insert_comment',
 					'wp_insert_post',
 					'wp_insert_user',
-					'wp_redirect'
+					'wp_signon',
+					'wp_redirect',
+					'register_post_type'
 				],
 				'wp_insert_post':[
 					'post_content',
@@ -236,34 +243,7 @@
 				window.update_textareas(_UXFORM.data.options,_UXFORM.data.schema);
 		      },
 		    });
-
 		}
-
-		$.fn.scrollTo = function( target, options, callback ){
-  if(typeof options == 'function' && arguments.length == 2){ callback = options; options = target; }
-  var settings = $.extend({
-    scrollTarget  : target,
-    offsetTop     : 50,
-    duration      : 500,
-    easing        : 'swing'
-  }, options);
-  return this.each(function(){
-    var scrollPane = $(this);
-    var scrollTarget = (typeof settings.scrollTarget == "number") ? settings.scrollTarget : $(settings.scrollTarget);
-    var scrollY = (typeof scrollTarget == "number") ? scrollTarget : scrollTarget.offset().top + scrollPane.scrollTop() - parseInt(settings.offsetTop);
-    scrollPane.animate({scrollTop : scrollY }, parseInt(settings.duration), settings.easing, function(){
-      if (typeof callback == 'function') { callback.call(this); }
-    });
-  });
-}
-		 
 	});
-
-
-
-
-
-
 </script>
 
-<input name="chuj" />

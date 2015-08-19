@@ -43,12 +43,22 @@
 				_data["postRender"] = function(control){
 					_this.swith_fields_to_min_mode(control);
 					_this.colorize_path(_this.paths_helper.keys_array);
+					
+					/* sortable */
+					$( "#main_container ol" ).sortable();
+    				$( "#main_container ol" ).disableSelection();
+				
 				}
 				
 				/* Helper function */
 				window.update_textareas(_data['options'],_data['schema']);
 		    	
 		    	$("#main_container").alpaca(_data);
+
+
+
+					
+
 	        },
 
 			render_field_options : function(_this){
@@ -177,19 +187,13 @@
 				this.funcrion_render_alpaca(this.data);
 			},
 
-			
-
 			remove_element : function( _this ){
-				
 				/* get parent to set path on parent */
 				var parent = _this.closest('li');
-				
 				this.deepDelete(this.paths_helper.acctual_schema_path, this.data);
 				$('#main_container').children().remove();
 				this.funcrion_render_alpaca(this.data);
-
 				this.get_paths( parent );
-
 			},
 
 			deepDelete : function(target, context) {				
@@ -212,6 +216,7 @@
 					}
 					$( this ).append('<div class="helper-object-remove">[remove]</div>')
 				});
+
 		
 			},
 
@@ -258,9 +263,6 @@
 				console.log('Seleced path:'+schema_path);
 			},
 
-
-
-
 			colorize_path : function(path){
 				if(path == undefined){
 					return false;
@@ -298,13 +300,22 @@
 					return "";
 				}
 			},
+
 			rename_schema_key : function(_this){
 				
 				var new_name = _this.val();
 				var old_name = _this.parents('li').attr(_ic_key);
 
-				console.log(this.paths_helper);
+			
+				var temp_node  = _.deepGet(this.data, this.paths_helper.acctual_schema_path);
+				this.deepDelete(this.paths_helper.acctual_schema_path, this.data);
+
+				var rem = this.paths_helper.acctual_schema_path.split(".");
+				rem.pop();
+				var schema_path = rem.join(".");
+				//schema_path += '.';
 				
+				_.deepSet(this.data, schema_path + '.' + new_name, temp_node);
 
 				return new_name;
 			},
