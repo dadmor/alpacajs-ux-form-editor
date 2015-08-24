@@ -60,8 +60,7 @@
 		<div class="context-mnu-item">WP Action</div>
 	</div>
 	<div class="helper-items-body" style="width:80%; float:right">
-		<label class="label">name</label>
-		<input class="input-helper" type="text" name="name" data-type="shema-key">
+		
 	</div>
 	<br style="clear:both">
 	</div>
@@ -98,14 +97,16 @@
 		//$(".alpaca-fieldset-item-container").live('click', function(e) {
 			e.stopPropagation();
 
+			_UXFORM.paths_helper.keys_array = [];
+			_UXFORM.get_paths( $(this) );
+
 			if( $(this).hasClass('alpaca_container_selected') ){
 				$(this).find('.helper-item-details').remove();
 			}else{
 				_UXFORM.render_field_options($(this));
 			}
 
-			_UXFORM.paths_helper.keys_array = [];
-			_UXFORM.get_paths( $(this) );
+			
 
 			_UXFORM.colorize_path(_UXFORM.paths_helper.keys_array);
 
