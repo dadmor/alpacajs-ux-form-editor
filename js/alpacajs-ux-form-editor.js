@@ -305,7 +305,7 @@
 				
 				_.deepSet( this.data, path_to_set, new_colection );
 				this.deepDelete(this.paths_helper.acctual_schema_path, this.data);
-				//alert('finished here');
+				return new_name;
 			},
 
 			/* KEY COLECTIONS */

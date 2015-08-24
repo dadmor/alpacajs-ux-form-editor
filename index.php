@@ -9,7 +9,7 @@
 <script type="text/javascript" src="js/main-templates.js"></script>
 
 <link type="text/css" href="css/alpaca-min.css" rel="stylesheet"/>
-<link type="text/css" href="css/main-style.css" rel="stylesheet"/>
+<link type="text/css" href="css/ux-form-editop-style.css" rel="stylesheet"/>
 
 <body>
 	<h1 id="form-title">Form creator</h1>
@@ -147,6 +147,7 @@
 			}
 			if($(this).attr('data-type') == 'shema-key'){
 				var output = _UXFORM.rename_schema_key($(this));
+				$(this).closest('li').children('.helper-object-key').text(output);
 			}
 			window.update_textareas(_UXFORM.data.options,_UXFORM.data.schema);
 
