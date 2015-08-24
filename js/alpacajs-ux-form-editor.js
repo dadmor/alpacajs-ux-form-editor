@@ -186,7 +186,7 @@
 				}
 			},
 
-			add_new_element : function( type, _enum ){
+			add_new_element : function( type, target_object ){
 				
 				var rnd = Math.floor(Math.random() * 899999) + 100000;
 				var element_name = "id_" + rnd; // + "_" + this.fields_counter;
@@ -218,9 +218,9 @@
 
 				_.deepSet(this.data, schema_path+'.type', type);
 				
-				if(_enum != ''){
+	/*			if(_enum != ''){
 					_.deepSet(this.data, schema_path+'.enum', _enum);
-				}
+				}*/
 
 				if(type == 'object'){
 					_.deepSet(this.data, schema_path+'.type', type);
@@ -234,6 +234,19 @@
 					_.deepSet(this.data, schema_path+'.items.type', 'object');
 					_.deepSet(this.data, schema_path+'.items.properties', 'false');
 				}
+
+				if(type == 'schema'){
+					//var schema_path = this.paths_helper.acctual_schema_path+'.properties.'+'new_name';
+					var schema = {
+						'post_title':{'type':'string','title':'Insert post title'},
+						'post_excerpt':{'type':'string','title':'Insert post excerpt'},
+						'post_content':{'type':'string','title':'Insert post content'}
+					};
+					_.deepSet(this.data, schema_path+'.type', 'object');
+					_.deepSet(this.data, schema_path+'.title', "Object title");
+					_.deepSet(this.data, schema_path+'.properties', schema);
+				}
+
 				this.fields_counter ++;
 				$('#main_container').children().remove();
 				this.funcrion_render_alpaca(this.data);

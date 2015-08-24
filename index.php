@@ -22,11 +22,11 @@
 		<a id="add_object" href="#" class="button action" style="width:200px; margin-bottom:2px">CONTAINER (fieldset)</a><Br/>
 		<a id="add_array" href="#" class="button action" style="width:200px; margin-bottom:2px">REPEATER (array)</a><Br/>
 		<div style="line-height:40px">WordPress Templates</div>
-		<a id="add_model_insert_post" href="#" class="button action" style="width:200px; margin-bottom:2px">wp_mail</a><Br/>
-		<a id="add_model_insert_post" href="#" class="button action" style="width:200px; margin-bottom:2px">wp_insert_post</a><Br/>
-		<a id="add_model_insert_post" href="#" class="button action" style="width:200px; margin-bottom:2px">wp_insert_user</a><Br/>
-		<a id="add_model_insert_post" href="#" class="button action" style="width:200px; margin-bottom:2px">wp_signon</a><Br/>
-		<a id="add_model_insert_post" href="#" class="button action" style="width:200px; margin-bottom:2px">wp_redirect</a><Br/>
+		<a id="add_model_insert_post" href="#" class="button action" data-object="wp_mail" style="width:200px; margin-bottom:2px">wp_mail</a><Br/>
+		<a id=".add_model_insert_post" href="#" class="button action" data-object="wp_insert_post" style="width:200px; margin-bottom:2px">wp_insert_post</a><Br/>
+		<a id=".add_model_insert_post" href="#" class="button action" style="width:200px; margin-bottom:2px">wp_insert_user</a><Br/>
+		<a id=".add_model_insert_post" href="#" class="button action" style="width:200px; margin-bottom:2px">wp_signon</a><Br/>
+		<a id=".add_model_insert_post" href="#" class="button action" style="width:200px; margin-bottom:2px">wp_redirect</a><Br/>
 	</div>
 
 	<br style="clear:both"/>
@@ -125,8 +125,8 @@
 		    _UXFORM.add_new_element('string','');
 		});
 
-		$('#add_select').click(function(){
-			_UXFORM.add_new_element('string',['option1','option2','option3']);
+		$('#add_model_insert_post').click(function(){
+			_UXFORM.add_new_element('schema',$(this).attr('data-object'));
 		});
 
 		$('#add_checkbox').click(function(){
