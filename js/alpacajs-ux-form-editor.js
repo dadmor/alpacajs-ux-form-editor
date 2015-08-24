@@ -82,15 +82,14 @@
 			/* ------------------------------------------------------ */
 			/* ELEMENT PROPERTIES FORM -------------------------------*/
 			render_field_options : function(_this){
-
+				
 				var targetPath = this.paths_helper.acctual_options_path;
-				alert(this.paths_helper.acctual_schema_path);
 				var tease_array = [
 					{	
 						'label':'name',
 						'name':'name',
 						'type':'shema-key',
-						'value':this.get_last_from_path(targetPath)
+						'value':this.get_last_from_path(this.paths_helper.acctual_schema_path)
 					},
 					{	
 						'label':'label',
@@ -313,6 +312,7 @@
 				
 				_.deepSet( this.data, path_to_set, new_colection );
 				this.deepDelete(this.paths_helper.acctual_schema_path, this.data);
+
 				return new_name;
 			},
 

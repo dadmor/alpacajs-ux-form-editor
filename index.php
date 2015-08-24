@@ -149,6 +149,7 @@
 			if($(this).attr('data-type') == 'shema-key'){
 				var output = _UXFORM.rename_schema_key($(this));
 				$(this).closest('li').children('.helper-object-key').text(output);
+				$(this).closest('li').attr('data-alpaca-item-container-item-key', output);
 			}
 			window.update_textareas(_UXFORM.data.options,_UXFORM.data.schema);
 
