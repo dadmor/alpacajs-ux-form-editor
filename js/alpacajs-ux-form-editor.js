@@ -186,70 +186,85 @@
 				}
 			},
 
-			add_new_element : function( type, target_object ){
+			add_new_element : function( type, object_name ){
+				
+				$('#main_container').children().remove();
+				this.fields_counter ++;
 				
 				var rnd = Math.floor(Math.random() * 899999) + 100000;
 				var element_name = "id_" + rnd; // + "_" + this.fields_counter;
 				
-				/* Update json data (schema) */
-				schema_path = this.paths_helper.acctual_schema_path;
-				options_path = this.paths_helper.acctual_schema_path;
 				
-				if( this.selected_type == 'object' ){
-					schema_path += '.properties.';
-					options_path += '.fields.';
-				}else{
-					if(this.selected_type != ''){
-						/* if selected textfield remove last key from path */
-						var rem = schema_path.split(".");
-						rem.pop();
-						schema_path = rem.join(".");
-						schema_path+='.';
-
-						var rem = options_path.split(".");
-						rem.pop();
-						options_path = rem.join(".");
-						options_path+='.';
-					}
+				if(type == 'string'){	
+					var path = this.create_path_to_new_element( element_name );				
+					_.deepSet(this.data, path['schema_path'] + '.type', type);
+					this.funcrion_render_alpaca(this.data);
 				}
-
-				schema_path += element_name;
-				options_path += element_name;
-
-				_.deepSet(this.data, schema_path+'.type', type);
-				
-	/*			if(_enum != ''){
-					_.deepSet(this.data, schema_path+'.enum', _enum);
-				}*/
-
 				if(type == 'object'){
-					_.deepSet(this.data, schema_path+'.type', type);
-					_.deepSet(this.data, schema_path+'.title', "Object title");
-					_.deepSet(this.data, schema_path+'.properties', false);
+					var path = this.create_path_to_new_element( element_name );
+					_.deepSet(this.data, path['schema_path'] + '.type', type);
+					_.deepSet(this.data, path['schema_path'] +'.title', "Object title");
+					_.deepSet(this.data, path['schema_path'] +'.properties', false);
+					this.funcrion_render_alpaca(this.data);
 				}
 
 				if(type == 'array'){
-					_.deepSet(this.data, schema_path+'.type', type);
-					_.deepSet(this.data, schema_path+'.items', false);
-					_.deepSet(this.data, schema_path+'.items.type', 'object');
-					_.deepSet(this.data, schema_path+'.items.properties', 'false');
+					var path = this.create_path_to_new_element( element_name );
+					_.deepSet(this.data, path['schema_path'] +'.type', type);
+					_.deepSet(this.data, path['schema_path'] +'.items', false);
+					_.deepSet(this.data, path['schema_path'] +'.items.type', 'object');
+					_.deepSet(this.data, path['schema_path'] +'.items.properties', 'false');
+					this.funcrion_render_alpaca(this.data);
 				}
 
-				if(type == 'schema'){
-					//var schema_path = this.paths_helper.acctual_schema_path+'.properties.'+'new_name';
+				if(type == 'object-schema'){					
+					
+					var _this = this;
+					var path = _this.create_path_to_new_element( object_name );
 					var schema = {
 						'post_title':{'type':'string','title':'Insert post title'},
 						'post_excerpt':{'type':'string','title':'Insert post excerpt'},
 						'post_content':{'type':'string','title':'Insert post content'}
 					};
-					_.deepSet(this.data, schema_path+'.type', 'object');
-					_.deepSet(this.data, schema_path+'.title', "Object title");
-					_.deepSet(this.data, schema_path+'.properties', schema);
+
+					/* GET REST JSON from URL */
+					var jqxhr = $.getJSON( "json/"+object_name+"-schema.json", function(data) {
+						
+						_.deepSet(_this.data, path['schema_path'] +'.type', 'object');
+						_.deepSet(_this.data, path['schema_path'] +'.title', "Object title");
+						_.deepSet(_this.data, path['schema_path'] +'.properties', data);
+						_this.funcrion_render_alpaca(_this.data);
+					
+					})					
+					.fail(function() {
+						alert( "load element error" );
+					});
 				}
 
-				this.fields_counter ++;
-				$('#main_container').children().remove();
-				this.funcrion_render_alpaca(this.data);
+				
+
+			},
+			create_path_to_new_element: function(element_name){
+				/* Update json data (schema) */
+				schema_path = this.paths_helper.acctual_schema_path;
+				options_path = this.paths_helper.acctual_schema_path;
+				
+				if( this.selected_type == 'object' ){
+					
+					schema_path += '.properties.';
+					options_path += '.fields.';
+
+				}else{
+					if(this.selected_type != ''){
+						/* if selected textfield remove last key from path */
+						schema_path = this.get_path_without_last(schema_path) + '.';
+						options_path = this.get_path_without_last(options_path) + '.';
+					}
+				}
+				var path = {};
+				path['schema_path'] = schema_path + element_name;
+				path['options_path'] = options_path + element_name;
+				return path;   
 			},
 
 			remove_element : function( _this ){
