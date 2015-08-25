@@ -335,13 +335,21 @@
 				var new_name = _this.val();
 				var old_name = _this.parents('li').attr( _ic_key );
 				
-				var colection = this.get_parents_colection( this.paths_helper.acctual_schema_path );
-				var position = this.get_index_by_key( colection, old_name );
-				var new_colection = this.add_object_between_colection( colection, position, new_name, colection[old_name] );
+				var schema_colection = this.get_parents_colection( this.paths_helper.acctual_schema_path );
+				var position = this.get_index_by_key( schema_colection, old_name );
+				var new_schema_colection = this.add_object_between_colection( schema_colection, position, new_name, schema_colection[old_name] );
 				var path_to_set = this.get_path_without_last( this.paths_helper.acctual_schema_path );
 				
-				_.deepSet( this.data, path_to_set, new_colection );
+				_.deepSet( this.data, path_to_set, new_schema_colection );
 				this.deepDelete(this.paths_helper.acctual_schema_path, this.data);
+
+				var options_colection = this.get_parents_colection( this.paths_helper.acctual_options_path );
+				var position = this.get_index_by_key( options_colection, old_name );
+				var new_options_colection = this.add_object_between_colection( options_colection, position, new_name, options_colection[old_name] );
+				var path_to_set = this.get_path_without_last( this.paths_helper.acctual_options_path );
+				
+				_.deepSet( this.data, path_to_set, new_options_colection );
+				this.deepDelete(this.paths_helper.acctual_options_path, this.data);
 
 				return new_name;
 			},
