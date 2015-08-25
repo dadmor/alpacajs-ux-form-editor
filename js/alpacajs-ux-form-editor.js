@@ -271,6 +271,7 @@
 				/* get parent to set path on parent */
 				var parent = _this.closest('li');
 				this.deepDelete(this.paths_helper.acctual_schema_path, this.data);
+				this.deepDelete(this.paths_helper.acctual_options_path, this.data);
 				$('#main_container').children().remove();
 				this.funcrion_render_alpaca(this.data);
 				this.get_paths( parent );
@@ -333,6 +334,7 @@
 
 				var new_name = _this.val();
 				var old_name = _this.parents('li').attr( _ic_key );
+				
 				var colection = this.get_parents_colection( this.paths_helper.acctual_schema_path );
 				var position = this.get_index_by_key( colection, old_name );
 				var new_colection = this.add_object_between_colection( colection, position, new_name, colection[old_name] );
@@ -389,27 +391,6 @@
 
 				return _.merge(first_object, added_object, last_object);
 
-			},
-
-
-			rename_schema_key2 : function( _this ){
-				
-				var new_name = _this.val();
-				var old_name = _this.parents('li').attr(_ic_key);
-
-				var temp_node  = _.deepGet(this.data, this.paths_helper.acctual_schema_path);
-				this.deepDelete(this.paths_helper.acctual_schema_path, this.data);
-
-				var rem = this.paths_helper.acctual_schema_path.split(".");
-				rem.pop();
-				var schema_path = rem.join(".");
-				//schema_path += '.';
-				
-				_.deepSet(this.data, schema_path + '.' + new_name, temp_node);
-
-				return new_name;
-				
 			}
-
 		};
 		/* ----------------------------------- */
