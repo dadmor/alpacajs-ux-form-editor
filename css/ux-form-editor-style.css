@@ -131,8 +131,9 @@ fieldset{
 }
 .alpaca-fieldset-legend{
 	margin:0px -10px;
-	font-size:11px;
+	font-size:16px;
 	color:#585A5C;
+	padding:10px;
 }
 .alpaca-fieldset-helper{
 	/* display:none; */
@@ -165,13 +166,15 @@ fieldset{
 	/* background-color: #F7F7F7; */
 	background-color: rgba(255,255,255,0.5);
 	color:#4c585c;
-	margin-top:26px;
+	margin-top:6px;
 	padding:10px;
 	margin-left:-5px;
 	position:relative;
 }
 .helper-item-details .context-mnu{
-	width:19%; height:100%; position:absolute; left:0; top:0; border-right:1px solid #ccc; background-color:#fff
+	width:28%; 
+	height:100%; 
+	position:absolute; left:4px; top:0; border-right:1px solid #ccc; background-color:#fff
 }
 .helper-item-details .context-mnu-item{
 	padding:5px; border-bottom:1px solid #ccc
@@ -189,25 +192,57 @@ fieldset{
 }
 
 .alpaca_container_selected{
-	border: 2px solid rgb(95,148,156);
+	border: 1px dotted rgb(121, 121, 121);
 	background: rgba(95,148,156,0.1);
 }
 
 .helper-object-key{
-	font-size:14px;
-	color:#5f6b70;
-	font-weight: 600;
+	font-size: 15px;
+	color: #FFFFFF;
+	font-weight: 800;
 	font-smooth: 2em;
-	text-shadow: 0px 0px 2px #dddddd;
+	text-shadow: 0px 0px 2px #5F5F5F;
+	background-color: rgba(95,148,156,0.5);
+	max-width: 28%;
+	margin: -5px;
+	height: 19px;
+	padding: 5px 0px 5px 5px;
+	border-bottom: 1px solid rgba(95, 148, 156, 0.24);
+	border-top: 1px solid rgba(255, 255, 255, 0.63);
+	border-left: 1px solid rgba(255, 255, 255, 0.63);
+	-webkit-border-top-left-radius: 2px;
+	-webkit-border-bottom-left-radius: 2px;
+	-moz-border-radius-topleft: 2px;
+	-moz-border-radius-bottomleft: 2px;
+	border-top-left-radius: 3px;
+	border-bottom-left-radius: 3px;
 }
+
 
 .helper-object-remove{
 	position:absolute;
-	right:5;
-	top:5;
-	color:#585A5C;
+	right:6px;
+	top:5px;
+	color:rgb(95,148,156);
+	font-size:21px;
+	text-shadow: 0px 0px 2px #fff;
+}
+.helper-object-remove:hover{
+	color:rgb(156, 95, 95);
 }
 
+.helper-object-properties{
+	position:absolute;
+	right:30px;
+	top:5px;
+	color:rgb(95,148,156);
+	font-size:21px;
+	text-shadow: 0px 0px 2px #fff;
+
+}
+.helper-object-properties:hover{
+	color:rgb(59, 92, 97);
+}
 
 /* autocomplete */
 .ui-autocomplete{

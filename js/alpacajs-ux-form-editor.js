@@ -3,7 +3,6 @@
 		_ic = '.alpaca-fieldset-item-container';
 		_ic_key = 'data-alpaca-item-container-item-key';
 		_dfc = 'data-first-container';
-			
 		
 		/* ----------------------------------- */
 		/* ALPACAJS UX EDITOR CLASS version 1.0  */
@@ -49,7 +48,16 @@
 					_this.colorize_path(_this.paths_helper.keys_array);
 					
 					/* sortable */
-					$( "#main_container ol" ).sortable();
+					$( "#main_container ol" ).sortable({
+					  start: function( event, ui ) {
+					  	$(this).css({'background-color':'#FDFFC7', 'outline': '#FDFFC7 solid 10px'});
+
+					  },
+					  stop: function( event, ui ) {
+					  	$(this).css({'background-color':'#fff', 'outline': 'none'});
+					  },
+
+					});
 					$( "#main_container ol" ).disableSelection();
 				
 				}
@@ -67,7 +75,7 @@
 					}else{
 						$( this ).html('<div class="helper-object-key">'+$(this).attr(_ic_key)+'</div>');
 					}
-					$( this ).append('<div class="helper-object-remove">[remove]</div>')
+					$( this ).append('<div class="helper-object-properties"><i class="fa fa-cogs"></i></div> <div class="helper-object-remove"><i class="fa fa-trash"></i></div>' )
 				});
 			},
 			colorize_path : function(path){
@@ -75,77 +83,50 @@
 					return false;
 				};
 				path.reverse();
-				$("#main_container li").removeClass('alpaca_container_selected');
-				$("#main_container li["+_ic_key+"='" + path[0] + "']" ).addClass('alpaca_container_selected');
+				//$("#main_container li").removeClass('alpaca_container_selected');
+				//$("#main_container li["+_ic_key+"='" + path[0] + "']" ).addClass('alpaca_container_selected');
 			},
-
 			/* ------------------------------------------------------ */
 			/* ELEMENT PROPERTIES FORM -------------------------------*/
 			render_field_options : function(_this){
-				
+				// _this -> $(this)
+				var __this = this;
 				var targetPath = this.paths_helper.acctual_options_path;
-				var tease_array = [
-					{	
-						'label':'name',
-						'name':'name',
-						'type':'shema-key',
-						'value':this.get_last_from_path(this.paths_helper.acctual_schema_path)
-					},
-					{	
-						'label':'label',
-						'name':'label',
-						'type':'option',
-						'value':this.get_option_value(targetPath+'.label')
-					},{
-						'label':'placeholder',
-						'name':'placeholder',
-						'type':'option',
-						'value':this.get_option_value(targetPath+'.placeholder')
-					},{							
-						'label':'helper',
-						'name':'helper',
-						'type':'option',
-						'value':this.get_option_value(targetPath+'.helper')
-					},{							
-						'label':'inputType',
-						'name':'inputType',
-						'type':'option',
-						'value':this.get_option_value(targetPath+'.inputType')
-					},{							
-						'label':'maskString',
-						'name':'maskString',
-						'type':'option',
-						'value':this.get_option_value(targetPath+'.maskString')
-					},{							
-						'label':'size',
-						'name':'size',
-						'type':'option',
-						'value':this.get_option_value(targetPath+'.size')
-					},{							
-						'label':'type',
-						'name':'type',
-						'type':'option',
-						'value':this.get_option_value(targetPath+'.type')
-					},{							
-						'label':'fieldClass',
-						'name':'fieldClass',
-						'type':'option',
-						'value':this.get_option_value(targetPath+'.fieldClass')
-					}
-					];
-				$('.alpaca-fieldset-item-container .helper-item-details').remove();
-				$('#helper-container-tpl').tmpl([{}]).appendTo(_this);
-				
-				$(_this).css('display','none');
-				$(_this).css('opacity', 0)
-				
-				$('#helper-input-tpl').tmpl(tease_array).appendTo(_this.find('.helper-items-body'));
-				
-				$(_this).slideDown(100);
-				$(_this).animate(
-					{ opacity: 1 },
-					{ queue: false, duration: 300 }
-				);
+
+				/* GET REST JSON from URL */
+				var jqxhr = $.getJSON( "json/editor-properties-fields.json", function(data) {
+					var tease_array = data;
+					$.each(tease_array, function( index, value ) {
+						if(value['value'] == 'key'){
+							tease_array[index]['value'] = __this.get_last_from_path(__this.paths_helper.acctual_schema_path);
+						}
+						if(value['value'] == 'option-value'){
+							tease_array[index]['value'] = __this.get_option_value(targetPath+'.'+value['name']) 
+						}
+					});
+					$('.alpaca-fieldset-item-container .helper-item-details').remove();
+
+					$('#helper-container-tpl').tmpl([{}]).appendTo(_this);
+					
+					$(_this).css('display','none');
+					$(_this).css('opacity', 0)
+					
+					$('#helper-input-tpl').tmpl(tease_array).appendTo(_this.find('.helper-items-body'));
+
+					$('html, body').animate({
+				        scrollTop: parseInt(_this.offset().top) - 20
+				    }, 500);
+					
+					$(_this).slideDown(100);
+					$(_this).animate(
+						{ opacity: 1 },
+						{ queue: false, duration: 300 }
+					);	
+
+				})					
+				.fail(function() {
+					alert( "load element error" );
+				});
 
 				/* init wordpress extentions */
 				
@@ -240,9 +221,6 @@
 						alert( "load element error" );
 					});
 				}
-
-				
-
 			},
 			create_path_to_new_element: function(element_name){
 				/* Update json data (schema) */
@@ -285,7 +263,6 @@
 				else
 				delete context[target];
 			},
-
 
 			// CREARTE ALPACA PATHS METHODS
 			get_paths : function(_this){
@@ -344,12 +321,14 @@
 				this.deepDelete(this.paths_helper.acctual_schema_path, this.data);
 
 				var options_colection = this.get_parents_colection( this.paths_helper.acctual_options_path );
-				var position = this.get_index_by_key( options_colection, old_name );
-				var new_options_colection = this.add_object_between_colection( options_colection, position, new_name, options_colection[old_name] );
-				var path_to_set = this.get_path_without_last( this.paths_helper.acctual_options_path );
-				
-				_.deepSet( this.data, path_to_set, new_options_colection );
-				this.deepDelete(this.paths_helper.acctual_options_path, this.data);
+				if(options_colection != undefined){
+					var position = this.get_index_by_key( options_colection, old_name );
+					var new_options_colection = this.add_object_between_colection( options_colection, position, new_name, options_colection[old_name] );
+					var path_to_set = this.get_path_without_last( this.paths_helper.acctual_options_path );
+					
+					_.deepSet( this.data, path_to_set, new_options_colection );
+					this.deepDelete(this.paths_helper.acctual_options_path, this.data);
+				}
 
 				return new_name;
 			},

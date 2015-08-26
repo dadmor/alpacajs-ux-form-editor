@@ -11,6 +11,8 @@
 <link type="text/css" href="css/alpaca-min.css" rel="stylesheet"/>
 <link type="text/css" href="css/ux-form-editor-style.css" rel="stylesheet"/>
 
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
 <body>
 	<h1 id="form-title">Form creator</h1>
 	<div id="main_container" data-path="/" style="float:left; width:70%">
@@ -60,7 +62,7 @@
 		<div class="context-mnu-item">Dependency</div>
 		<div class="context-mnu-item">WP Action</div>
 	</div>
-	<div class="helper-items-body" style="width:80%; float:right">
+	<div class="helper-items-body" style="width:70%; float:right">
 		
 	</div>
 	<br style="clear:both">
@@ -94,26 +96,30 @@
 			
 		});
 
-		$(document).on("click", "li.alpaca-fieldset-item-container", function(e) { 
+		$(document).on("click", "li", function(e) { 
 		//$(".alpaca-fieldset-item-container").live('click', function(e) {
+
 			e.stopPropagation();
 
 			_UXFORM.paths_helper.keys_array = [];
 			_UXFORM.get_paths( $(this) );
 
-			if( $(this).hasClass('alpaca_container_selected') ){
+
+
+			if( $(this).hasClass("alpaca_container_selected") ){
+				$('li').removeClass( "alpaca_container_selected" );
+
 				$(this).find('.helper-item-details').remove();
 			}else{
+				$('li').removeClass( "alpaca_container_selected" );
+				$(this).addClass( "alpaca_container_selected" );
 				_UXFORM.render_field_options($(this));
-			}
 
-			
+			}
 
 			_UXFORM.colorize_path(_UXFORM.paths_helper.keys_array);
 
-			$('html, body').animate({
-		        scrollTop: parseInt($(this).offset().top) - 20
-		    }, 300);
+			
 
 	    });
 
@@ -143,13 +149,16 @@
 		});
 
 		$(document).on("change", "input.input-helper", function(e) { 
-			
+			alert('change'+$(this).attr('data-type'));
 			if($(this).attr('data-type') == 'option'){				
 				_UXFORM.add_option_value($(this), $(this).attr('name'));
 			}
 			if($(this).attr('data-type') == 'shema-key'){
+				alert('error on this field on children with container');
 				var output = _UXFORM.rename_schema_key($(this));
+				alert(output);
 				$(this).closest('li').children('.helper-object-key').text(output);
+				$(this).closest('li').find('.title').text(output);
 				$(this).closest('li').attr('data-alpaca-item-container-item-key', output);
 			}
 			window.update_textareas(_UXFORM.data.options,_UXFORM.data.schema);
