@@ -14,7 +14,12 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 
 <body>
+	<div style="font-size:12px; color:#aaa;">Deep beta, many methods is under construction, not stable yet!!!</div>
+	<div style="font-size:12px; color:#aaa;">GitHub: <a href="https://github.com/dadmor/alpacajs-ux-form-editor">https://github.com/dadmor/alpacajs-ux-form-editor</a></div>
+	<div style="font-size:12px; color:#aaa;">Author: Grzegorz Durtan, Owner: BlockBox sp. z o.o. Licence GPL 2.0</div>
+	
 	<h1 id="form-title">Form creator</h1>
+
 	<div id="main_container" data-path="/" style="float:left; width:70%">
 	</div>
 	<div id="forms-elements" style="float:right: width:25%; text-align:center; position:fixed; right:20px">
