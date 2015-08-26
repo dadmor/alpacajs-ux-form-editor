@@ -16,6 +16,7 @@
 <body>
 	<div style="font-size:12px; color:#aaa;">Deep beta, many methods is under construction, not stable yet!!!</div>
 	<div style="font-size:12px; color:#aaa;">GitHub: <a href="https://github.com/dadmor/alpacajs-ux-form-editor">https://github.com/dadmor/alpacajs-ux-form-editor</a></div>
+	<div style="font-size:12px; color:#aaa;">DOCUMENTATION: <a href="http://alpacajs.org/documentation.html">http://alpacajs.org/documentation.html</a></div>
 	<div style="font-size:12px; color:#aaa;">Author: Grzegorz Durtan, Owner: BlockBox sp. z o.o. Licence GPL 2.0</div>
 	
 	<h1 id="form-title">Form creator</h1>
