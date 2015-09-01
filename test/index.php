@@ -8,14 +8,14 @@
 	<button>< back to editor</button>
 	<hr>
 	<h2>Options:</h2>
-	<textarea name="options_output" style="width:100%; height:200px"><?php echo $_POST['options_output']?></textarea>
+	<textarea name="options_output" style="width:100%; height:200px"><?php echo stripslashes($_POST['options_output']); ?></textarea>
 	<h2>Schema:</h2>
-	<textarea name="schema_output" style="width:100%; height:200px"><?php echo $_POST['schema_output']?></textarea>
+	<textarea name="schema_output" style="width:100%; height:200px"><?php echo stripslashes($_POST['schema_output'])?></textarea>
 </form>
 <script>
 	$("#main_container").alpaca({
-		"options":<?php echo $_POST['options_output']?>,
-		"schema":<?php echo $_POST['schema_output']?>
+		"options":<?php echo stripslashes($_POST['options_output'])?>,
+		"schema":<?php echo stripslashes($_POST['schema_output'])?>
 	});
 </script>
 

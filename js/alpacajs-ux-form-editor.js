@@ -49,6 +49,7 @@
 					
 					/* sortable */
 					$( "#main_container ol" ).sortable({
+					  handle: ".helper-object-key" ,
 					  start: function( event, ui ) {
 					  	$(this).css({'background-color':'#FDFFC7', 'outline': '#FDFFC7 solid 10px'});
 
@@ -73,7 +74,7 @@
 					if(  $(this).children('fieldset').hasClass('alpaca-fieldset')  ){
 						$( this ).find('legend').html('<span class="title">'+$(this).attr(_ic_key)+'</span> <span> [CONTAINER] click to add elements inside me.</span>');
 					}else{
-						$( this ).html('<div class="helper-object-key">'+$(this).attr(_ic_key)+'</div>');
+						$( this ).html('<div class="helper-object-key">'+$(this).attr(_ic_key)+'<i class="fa fa-arrows"></i></div>');
 					}
 					$( this ).append('<div class="helper-object-properties"><i class="fa fa-cogs"></i></div> <div class="helper-object-remove"><i class="fa fa-trash"></i></div>' )
 				});
@@ -88,13 +89,14 @@
 			},
 			/* ------------------------------------------------------ */
 			/* ELEMENT PROPERTIES FORM -------------------------------*/
-			render_field_options : function(_this){
+			render_field_options : function(_this, _selected){
 				// _this -> $(this)
 				var __this = this;
 				var targetPath = this.paths_helper.acctual_options_path;
 
 				/* GET REST JSON from URL */
 				var jqxhr = $.getJSON( "json/editor-properties-fields.json", function(data) {
+					
 					var tease_array = data;
 					$.each(tease_array, function( index, value ) {
 						if(value['value'] == 'key'){
@@ -103,17 +105,21 @@
 						if(value['value'] == 'option-value'){
 							tease_array[index]['value'] = __this.get_option_value(targetPath+'.'+value['name']) 
 						}
+						tease_array[index]['selected_section'] = _selected;
 					});
+
 					$('.alpaca-fieldset-item-container .helper-item-details').remove();
 
-					$('#helper-container-tpl').tmpl([{}]).appendTo(_this);
+					$('#helper-container-tpl').tmpl([{'selected':_selected}]).appendTo(_this);
 					
 					$(_this).css('display','none');
-					$(_this).css('opacity', 0)
+					$(_this).css('opacity', 0);
+
+					//console.log(tease_array);
 					
 					$('#helper-input-tpl').tmpl(tease_array).appendTo(_this.find('.helper-items-body'));
 
-					$('html, body').animate({
+					/*$('html, body').animate({
 				        scrollTop: parseInt(_this.offset().top) - 20
 				    }, 500);
 					
@@ -121,7 +127,8 @@
 					$(_this).animate(
 						{ opacity: 1 },
 						{ queue: false, duration: 300 }
-					);	
+					);	*/
+					$(_this).css({'opacity':'1','display':'block'});
 
 				})					
 				.fail(function() {

@@ -5,6 +5,8 @@
 <script type="text/javascript" src="js/lodash.js"></script>
 <script type="text/javascript" src="js/lodash-deep.js"></script>
 <script type="text/javascript" src="js/alpacajs-ux-form-editor.js"></script>
+<script type="text/javascript" src="js/alpacajs-ux-form-editor-init.js"></script>
+
 
 <script type="text/javascript" src="js/main-templates.js"></script>
 
@@ -62,213 +64,61 @@
 
 <script id="helper-container-tpl" type="text/x-jquery-tmpl">
 	<div class="helper-item-details">
+
 	<div class="context-mnu"> 
-		<div class="context-mnu-item">Basic</div>
-		<div class="context-mnu-item">Advanced</div>
-		<div class="context-mnu-item">Dependency</div>
-		<div class="context-mnu-item">WP Action</div>
+		<div class="context-mnu-item {{if selected == 'basic' }}selected_button{{/if}}" data-selected="basic">Basic</div>
+		<div class="context-mnu-item {{if selected == 'advanced' }}selected_button{{/if}}" data-selected="advanced">Advanced</div>
+		<!--<div class="context-mnu-item {{if selected == 'xxx' }}selected_button{{/if}}" data-selected="dependecny">Dependency</div>-->
 	</div>
 	<div class="helper-items-body" style="width:70%; float:right">
 		
 	</div>
 	<br style="clear:both">
-	</div>
 
+	</div>
 </script>
 
 <script id="helper-input-tpl" type="text/x-jquery-tmpl">
-	<label class="label">${label}</label>
-	<input class="input-helper" type="text" name="${name}" data-type="${type}" value="${value}">
+	{{if section == selected_section }}
+		{{if input_type == 'text' }}
+			<label class="label">${label}</label>
+			<input class="input-helper" type="text" name="${name}" data-type="${type}" value="${value}">
+		{{/if}}
+		{{if input_type == 'select' }}
+			<label class="label">${label}</label>
+			<select class="input-helper" name="${name}" data-type="${type}">
+				{{each(i, result) input_data}}
+					{{if result == value }}
+						<option value="${result}" selected="selected">${result}</option>
+					{{else}}
+						<option value="${result}">${result}</option>
+					{{/if}}
+				{{/each}}
+			</select>
+		{{/if}}
+	{{/if}}
 </script>
 
 <script type="text/javascript">
 
-	jQuery(document).ready(function($) {
 
-		window.update_textareas = function(options,schema){
-			$("#schema_output").text(JSON.stringify(schema));
-			$("#options_output").text(JSON.stringify(options));
-		}
+<?php if(@$_POST["schema_output"] != ''){ ?>
+	window.post_options = <?php echo stripslashes(@$_POST["options_output"]); ?>;
+	window.post_schema = <?php echo stripslashes(@$_POST["schema_output"]); ?>;
+	var data = {
+		"options":window.post_options,
+		"schema": window.post_schema, 
+		"view":"VIEW_WEB_DISPLAY_LIST"
+	}
+	_UXFORM.funcrion_render_alpaca(data);
 
-		/* ACTIONS EVENTS HANDLERS */
+<?php }else{ ?>
 
-		$(document).on("click", "div .helper-object-remove", function(e) { 
-			
-			e.stopPropagation();
+	/* standard init method */
+		_UXFORM.funcrion_render_alpaca(_UXFORM.data);
 
-			_UXFORM.paths_helper.keys_array = [];
-			_UXFORM.get_paths( $(this).parent() );
-			_UXFORM.remove_element( $(this).parent() );
-			
-		});
-
-		$(document).on("click", "li", function(e) { 
-		//$(".alpaca-fieldset-item-container").live('click', function(e) {
-
-			e.stopPropagation();
-
-			_UXFORM.paths_helper.keys_array = [];
-			_UXFORM.get_paths( $(this) );
-
-
-
-			if( $(this).hasClass("alpaca_container_selected") ){
-				$('li').removeClass( "alpaca_container_selected" );
-
-				$(this).find('.helper-item-details').remove();
-			}else{
-				$('li').removeClass( "alpaca_container_selected" );
-				$(this).addClass( "alpaca_container_selected" );
-				_UXFORM.render_field_options($(this));
-
-			}
-
-			_UXFORM.colorize_path(_UXFORM.paths_helper.keys_array);
-
-			
-
-	    });
-
-		$(document).on("click", "div.helper-item-details", function(e) { 
-		//$(".helper-item-details").live('click', function(e) {                 
-	        e.stopPropagation();
-	    });
-
-	    $('#add_input').click(function(){
-		    _UXFORM.add_new_element('string','');
-		});
-
-		$('.new_element').click(function(){
-			_UXFORM.add_new_element($(this).attr('data-type'),$(this).attr('data-object-name'));
-		});
-
-		$('#add_checkbox').click(function(){
-			_UXFORM.add_new_element( 'boolean' , '' );
-		});
-
-		$('#add_object').click(function(){
-			_UXFORM.add_new_element( 'object' , '' );
-		});
-
-		$('#add_array').click(function(){
-			_UXFORM.add_new_element( 'array' , '' );
-		});
-
-		$(document).on("change", "input.input-helper", function(e) { 
-			alert('change'+$(this).attr('data-type'));
-			if($(this).attr('data-type') == 'option'){				
-				_UXFORM.add_option_value($(this), $(this).attr('name'));
-			}
-			if($(this).attr('data-type') == 'shema-key'){
-				alert('error on this field on children with container');
-				var output = _UXFORM.rename_schema_key($(this));
-				alert(output);
-				$(this).closest('li').children('.helper-object-key').text(output);
-				$(this).closest('li').find('.title').text(output);
-				$(this).closest('li').attr('data-alpaca-item-container-item-key', output);
-			}
-			window.update_textareas(_UXFORM.data.options,_UXFORM.data.schema);
-
-		});
-
-		/* INIT  */
-	    
-	    <?php if(@$_POST["schema_output"] != ''){ ?>
-			
-			var data = {
-				"options":<?php echo $_POST["options_output"]; ?>,
-				"schema": <?php echo $_POST["schema_output"]; ?>, 
-				"view":"VIEW_WEB_DISPLAY_LIST"
-			}
-			_UXFORM.funcrion_render_alpaca(data);
-	    
-	    <?php }else{ ?>
-
-	    	/* standard init method */
- 			_UXFORM.funcrion_render_alpaca(_UXFORM.data);
-
-	    <?php } ?>
-
-	    window.run_sortable = function(){
-
-    		
-
-	    }
-
-
-		window.wordpress_autocomple_names = function (data){
-			/* WORDPRESS names mapping */
-			dictionary = {
-				'wp_actions':[
-					'wp_mail',
-					'wp_insert_comment',
-					'wp_insert_post',
-					'wp_insert_user',
-					'wp_signon',
-					'wp_redirect',
-					'register_post_type'
-				],
-				'wp_insert_post':[
-					'post_content',
-					'post_name',
-					'post_title',
-					'post_status',
-					'post_type',
-					'post_author',
-					'ping_status',
-					'default_ping_status',
-					'post_parent',
-					'menu_order',
-					'to_ping',
-					'pinged',
-					'post_password',
-					'guid',
-					'post_content_filtered',
-					'post_excerpt',
-					'post_date_gmt',
-					'comment_status',
-					'post_category',
-					'tags_input',
-					'tax_input',
-					'page_template'
-				],
-				'wp_insert_user':[
-					'user_pass',
-					'user_login',
-					'user_nicename',
-					'user_url',
-					'user_email',
-					'display_name',
-					'nickname',
-					'first_name',
-					'last_name',
-					'description',
-					'rich_editing',
-					'user_registered',
-					'role',
-					'jabber',
-					'aim',
-					'yim'
-				]
-			};
-
-		    $( "input[name='name']" ).autocomplete({
-		      source: dictionary[data],
-		      close: function( event, ui ) {
-		      	console.log(event);
-		        if($(this).attr('data-type') == 'shema-key'){
-					
-					var output = _UXFORM.rename_schema_key($(event.target));
-					$(event.target).parents('li').find('.helper-object-key').text(output);
-					/* OR */
-					$(event.target).parents('li').find('.alpaca-fieldset-legend').children('.title').text(output);
-					
-				}
-				window.update_textareas(_UXFORM.data.options,_UXFORM.data.schema);
-		      },
-		    });
-		}
-	});
-
+<?php } ?>
 </script>
+
+
 
