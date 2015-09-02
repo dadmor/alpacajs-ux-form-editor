@@ -78,5 +78,13 @@
 		"value":"option-value",
 		"section":"advanced",
 		"input_type":"text"
+	},
+	{							
+		"label":"rows",
+		"name":"rows",
+		"type":"option",
+		"value":"option-value",
+		"section":"advanced",
+		"input_type":"text"
 	}
 ]
