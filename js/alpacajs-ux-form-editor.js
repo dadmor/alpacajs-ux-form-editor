@@ -94,8 +94,14 @@
 				var __this = this;
 				var targetPath = this.paths_helper.acctual_options_path;
 
+				//alert(targetPath);
+				
+				var elementType = _.deepGet(this.data, targetPath);
+				try { elementType = elementType['type']; }
+				catch (e) { elementType = 'text'}
+				
 				/* GET REST JSON from URL */
-				var jqxhr = $.getJSON( "json/editor-properties-fields.json", function(data) {
+				var jqxhr = $.getJSON( "json/editor-properties-fields-"+elementType+".json", function(data) {
 					
 					var tease_array = data;
 					$.each(tease_array, function( index, value ) {

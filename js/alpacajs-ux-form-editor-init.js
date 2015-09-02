@@ -27,13 +27,11 @@ jQuery(document).ready(function($) {
 
 			if( $(this).hasClass("alpaca_container_selected") ){
 				$('li').removeClass( "alpaca_container_selected" );
-
 				$(this).find('.helper-item-details').remove();
 			}else{
 				$('li').removeClass( "alpaca_container_selected" );
 				$(this).addClass( "alpaca_container_selected" );
 				_UXFORM.render_field_options($(this),'basic');
-
 			}
 
 			_UXFORM.colorize_path(_UXFORM.paths_helper.keys_array);
@@ -78,7 +76,8 @@ jQuery(document).ready(function($) {
 		});
 
 		$(document).on("change", ".input-helper", function(e) { 
-			alert('change'+$(this).attr('data-type'));
+			//alert('change'+$(this).attr('data-type'));
+
 			if($(this).attr('data-type') == 'option'){				
 				_UXFORM.add_option_value($(this), $(this).attr('name'));
 			}
@@ -92,12 +91,14 @@ jQuery(document).ready(function($) {
 			}
 			window.update_textareas(_UXFORM.data.options,_UXFORM.data.schema);
 
+			if($(this).attr('name') == 'type'){
+				$(this).parents('li').attr('data-ftype', $(this).val());
+				alert('MVP say: close and open bar to reload options');
+			}
+
 		});
 
 		/* INIT  */
-	    
-	   
-
 
 		window.wordpress_autocomple_names = function (data){
 			/* WORDPRESS names mapping */
