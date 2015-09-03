@@ -1,0 +1,43 @@
+{
+	"schema": {
+		"to":{
+			"type":"string",
+			"title":"Insert mail recipient"
+			},
+		"subject":{
+			"type":"string",
+			"title":"The subject of the message."
+			},
+		"message":{
+			"type":"string",
+			"title":"Message content"
+		},
+		"headers":{
+			"type":"string",
+			"title":"Mail headers to send with the message"
+		},
+		"attachments":{
+			"type":"string",
+			"title":"Single filename"
+		}
+			
+	},
+	"options":{
+
+		"to":{
+			
+			},
+		"subject":{
+			
+			},
+		"message":{
+			
+		},
+		"headers":{
+			
+		},
+		"attachments":{
+		
+		}			
+	}
+}

@@ -1,0 +1,37 @@
+{
+	"schema":{
+		"args":{
+			"type":"object",
+			"title":"Object title",
+			"properties":{
+				"post_title":{
+					"type":"string",
+					"title":"Insert post title"
+					},
+				"post_excerpt":{
+					"type":"string",
+					"title":"Insert post excerpt"
+					},
+				"post_content":{
+					"type":"string",
+					"title":"Insert post content"
+				}
+			}
+		}
+	},
+	"options":{
+		"args":{		
+			"fields":{
+				"post_title":{
+					
+					},
+				"post_excerpt":{
+					"type":"textarea"
+					},
+				"post_content":{
+					"type":"textarea"
+				}
+			}
+		}
+	}
+}

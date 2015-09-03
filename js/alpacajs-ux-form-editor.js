@@ -99,6 +99,7 @@
 				var elementType = _.deepGet(this.data, targetPath);
 				try { elementType = elementType['type']; }
 				catch (e) { elementType = 'text'}
+				if(elementType == undefined){elementType = 'text'}
 				
 				/* GET REST JSON from URL */
 				var jqxhr = $.getJSON( "json/editor-properties-fields-"+elementType+".json", function(data) {
@@ -222,11 +223,15 @@
 					};
 
 					/* GET REST JSON from URL */
-					var jqxhr = $.getJSON( "json/"+object_name+"-schema.json", function(data) {
-						
+					var jqxhr = $.getJSON( "json/callback_"+object_name+".json", function(data) {
+						console.log(path);
 						_.deepSet(_this.data, path['schema_path'] +'.type', 'object');
 						_.deepSet(_this.data, path['schema_path'] +'.title', "Object title");
-						_.deepSet(_this.data, path['schema_path'] +'.properties', data);
+						_.deepSet(_this.data, path['schema_path'] +'.properties', data['schema']);
+
+						//_.deepSet(_this.data, path['options_path'] +'.type', 'object');
+						//_.deepSet(_this.data, path['options_path'] +'.title', "Object title");
+						_.deepSet(_this.data, path['options_path'] +'.fields', data['options']);
 						_this.funcrion_render_alpaca(_this.data);
 					
 					})					
@@ -238,7 +243,7 @@
 			create_path_to_new_element: function(element_name){
 				/* Update json data (schema) */
 				schema_path = this.paths_helper.acctual_schema_path;
-				options_path = this.paths_helper.acctual_schema_path;
+				options_path = this.paths_helper.acctual_options_path;
 				
 				if( this.selected_type == 'object' ){
 					
